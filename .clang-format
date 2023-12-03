@@ -2,7 +2,6 @@ BasedOnStyle: Google
 IndentWidth: 4
 AccessModifierOffset: -4
 ColumnLimit: 120
-AllowShortFunctionsOnASingleLine: None
 AllowShortIfStatementsOnASingleLine: false
 AllowShortLoopsOnASingleLine: false
 KeepEmptyLinesAtTheStartOfBlocks: true

@@ -1,0 +1,1 @@
+target_sources(test PRIVATE test.cpp)

@@ -3,6 +3,7 @@
 
 #define TESTING
 #include "parser.h"
+#include "errors.h"
 
 using namespace commands;
 
@@ -37,6 +38,9 @@ TEST_CASE("Assigment number") {
     REQUIRE(rhs->value == 1234567890);
 
     REQUIRE_THROWS_WITH(GetCode("r1 = cas"), "Line 1: Expected number or operator after \"=\"");
+
+    lines = GetCode("bruh: r0 = -5"); // TODO
+
 }
 
 TEST_CASE("Assigment operator") {
@@ -65,6 +69,32 @@ TEST_CASE("Assigment operator") {
 
     REQUIRE_THROWS_WITH(GetCode("r0 = + r0 r0 \n r2 = * r2"), "Line 2: Expected more tokens");
     REQUIRE_THROWS_WITH(GetCode("r0 = + r0 r0 r0"), "Line 1: Expected 5 tokens, found 6");
+    REQUIRE_THROWS_AS(GetCode("r0 = / r11 r12 r13"), SyntaxError);
+}
+
+TEST_CASE("Cas") {
+    auto lines = GetCode("r2 := cas RLX #r10 r0 r1");
+    auto* cas = As<commands::Cas>(lines[0].get());
+    REQUIRE(cas->res == Register{2});
+    REQUIRE(cas->order == MemoryOrder::RLX);
+    REQUIRE(cas->at == Register{10});
+    REQUIRE(cas->expected == Register{0});
+    REQUIRE(cas->desired == Register{1});
+
+    REQUIRE_THROWS_AS(GetCode("r1 := r2"), SyntaxError);
+    REQUIRE_THROWS_WITH(GetCode("r1 r2"), "Line 1: Expected assigment after register");
+}
+
+TEST_CASE("Fai") {
+    auto lines = GetCode("r0 := fai SEQ_CST #r0 r2");
+    auto* cas = As<commands::Fai>(lines[0].get());
+    REQUIRE(cas->res == Register{0});
+    REQUIRE(cas->order == MemoryOrder::SEQ_CST);
+    REQUIRE(cas->at == Register{0});
+    REQUIRE(cas->add == Register{2});
+
+    REQUIRE_THROWS_AS(GetCode("r1 := fai RLX r1 r2"), SyntaxError);
+    REQUIRE_THROWS_WITH(GetCode("\n\n\nr2 := RLX RLX #r1 r2"), "Line 1: Expected \"cas\" or \"fai\" after \":=\"");
 }
 
 } // namespace

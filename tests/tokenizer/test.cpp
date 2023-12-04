@@ -61,14 +61,14 @@ TEST_CASE("One line") {
     CheckTokens(lines[0], If{}, tokens::Register{5}, Goto{{"aboba"}});
     lines = GetLines("pupupu: r1 := cas RLX #r2 r3 r4");
     CheckTokens(lines[0], Label{"pupupu"}, tokens::Register{1}, ReturnAssigment{}, Cas{},
-                tokens::MemoryModel{::MemoryModel::RLX}, MemoryAt{tokens::Register{2}}, tokens::Register{3},
+                tokens::MemoryOrder{::MemoryOrder::RLX}, MemoryAt{tokens::Register{2}}, tokens::Register{3},
                 tokens::Register{4});
 }
 
 TEST_CASE("Couple lines") {
     auto lines = GetLines("fence REL_ACQ\n\t r4 := fai ACQ #r0 r9", 2);
-    CheckTokens(lines[0], Fence{}, tokens::MemoryModel{::MemoryModel::REL_ACQ});
-    CheckTokens(lines[1], tokens::Register{4}, ReturnAssigment{}, Fai{}, tokens::MemoryModel{::MemoryModel::ACQ},
+    CheckTokens(lines[0], Fence{}, tokens::MemoryOrder{::MemoryOrder::REL_ACQ});
+    CheckTokens(lines[1], tokens::Register{4}, ReturnAssigment{}, Fai{}, tokens::MemoryOrder{::MemoryOrder::ACQ},
                 MemoryAt{tokens::Register{0}}, tokens::Register{9});
 }
 

@@ -2,61 +2,39 @@
 
 #include "defs.h"
 
+#include "errors.h"
+
 #include <cstdint>
 #include <variant>
 #include <vector>
+#include <optional>
 #include <string>
 
 #define DEFINE_EQUALS(Self) bool operator==(const Self&) const = default
 
-#define DEFINE_TOKEN(Name)   \
-    struct Name {            \
-        DEFINE_EQUALS(Name); \
+#define DEFINE_TOKEN(Name)                          \
+    struct Name {                                   \
+        DEFINE_EQUALS(Name);                        \
+        static constexpr char kTokenName[] = #Name; \
+    };
+
+#define DEFINE_TOKEN_WITH_ARG(Name, ArgT, arg_name)           \
+    struct Name {                                             \
+        ArgT arg_name;                                        \
+        Name(ArgT arg_name) : arg_name(std::move(arg_name)) {} \
+        DEFINE_EQUALS(Name);                                  \
+        static constexpr char kTokenName[] = #Name;           \
     };
 
 namespace tokens {
 
-struct Register {
-    ::Register reg;
-    Register(::Register reg) : reg(reg) {}
-    DEFINE_EQUALS(Register);
-};
-
-struct BinaryOperator {
-    ::BinaryOperator op;
-    BinaryOperator(::BinaryOperator op) : op(std::move(op)) {}
-    DEFINE_EQUALS(BinaryOperator);
-};
-
-struct MemoryModel {
-    ::MemoryModel model;
-    MemoryModel(::MemoryModel model) : model(std::move(model)) {}
-    DEFINE_EQUALS(MemoryModel);
-};
-
-struct Constant {
-    int32_t value;
-    Constant(int32_t value) : value(value) {}
-    DEFINE_EQUALS(Constant);
-};
-
-struct Label {
-    std::string name;
-    Label(std::string name) : name(std::move(name)) {}
-    DEFINE_EQUALS(Label);
-};
-
-struct Goto {
-    Label label;
-    Goto(Label label) : label(std::move(label)) {}
-    DEFINE_EQUALS(Goto);
-};
-
-struct MemoryAt {
-    Register r;
-    MemoryAt(Register r) : r(std::move(r)) {}
-    DEFINE_EQUALS(MemoryAt);
-};
+DEFINE_TOKEN_WITH_ARG(Register, ::Register, reg)
+DEFINE_TOKEN_WITH_ARG(BinaryOperator, ::BinaryOperator, op)
+DEFINE_TOKEN_WITH_ARG(MemoryOrder, ::MemoryOrder, order)
+DEFINE_TOKEN_WITH_ARG(Constant, Word, value)
+DEFINE_TOKEN_WITH_ARG(Label, std::string, name)
+DEFINE_TOKEN_WITH_ARG(Goto, Label, label)
+DEFINE_TOKEN_WITH_ARG(MemoryAt, Register, reg)
 
 DEFINE_TOKEN(Assigment)
 DEFINE_TOKEN(ReturnAssigment)
@@ -67,16 +45,33 @@ DEFINE_TOKEN(Fence)
 DEFINE_TOKEN(Cas)
 DEFINE_TOKEN(Fai)
 
-using Token = std::variant<Register, BinaryOperator, MemoryModel, Constant, Label, Goto, MemoryAt, Assigment, ReturnAssigment, If,
-                           Load, Store, Fence, Cas, Fai>;
+using Token = std::variant<Register, BinaryOperator, MemoryOrder, Constant, Label, Goto, MemoryAt, Assigment,
+                           ReturnAssigment, If, Load, Store, Fence, Cas, Fai>;
 using Line = std::vector<Token>;
 
-template<typename T>
+template <typename T>
 bool Is(const Token& token) {
     return std::get_if<T>(&token);
+}
+
+template <typename T>
+T AsThrows(Token token) {
+    if (!Is<T>(token)) {
+        throw SyntaxError{std::string{"Expected \""} + T::kTokenName + "\" token"};
+    }
+    return std::get<T>(token);
+}
+
+template <typename T>
+std::optional<T> As(Token token) {
+    if (!Is<T>(token)) {
+        return {};
+    }
+    return std::get<T>(token);
 }
 
 }  // namespace tokens
 
 #undef DEFINE_EQUALS
 #undef DEFINE_TOKEN
+#undef DEFINE_TOKEN_WITH_ARG

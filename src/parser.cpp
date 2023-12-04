@@ -1,10 +1,11 @@
 #include "parser.h"
 
 #include <optional>
+#include <unordered_map>
 
 namespace {
 
-std::unique_ptr<Command> ParseCommand(const tokens::Line& line) {
+std::unique_ptr<Command> ParseCommand(const tokens::Line& line, std::unordered_map<std::string, size_t>& labels) {
     tokens::Token token = tokens::Constant{0};
     auto next = [&line, i = 0, &token](bool check_end = false) mutable {
         if (check_end) {
@@ -18,31 +19,40 @@ std::unique_ptr<Command> ParseCommand(const tokens::Line& line) {
         }
         return token = line[i++];
     };
-    auto get_register = [&](tokens::Token token) -> std::optional<Register> {
-        if (auto reg = std::get_if<tokens::Register>(&token)) {
-            return {reg->reg};
-        }
-        return {};
-    };
-    auto res = [&]() {
+    auto res = [&]() -> std::unique_ptr<Command> {
         using tokens::Is;
-        if (auto reg = get_register(next()); reg) {
+        using tokens::AsThrows;
+        if (Is<tokens::Label>(next())) {
+            // TODO
+            next();
+        }
+        if (auto reg = As<tokens::Register>(token)) {
             if (Is<tokens::Assigment>(next())) {
-                if (Is<tokens::Constant>(next())) {  // r0 = 42
-                    return std::make_unique<commands::Assigment>(
-                        *reg, std::make_unique<commands::Number>(std::get<tokens::Constant>(token).value));
+                if (auto number = As<tokens::Constant>(next())) {  // r0 = 42
+                    return std::make_unique<commands::Assigment>(reg->reg,
+                                                                 std::make_unique<commands::Number>(number->value));
                 }
-                if (Is<tokens::BinaryOperator>(token)) {  // r0 = + 40 2
-                    auto op = std::get<tokens::BinaryOperator>(token).op;
-                    auto lhs = get_register(next());
-                    auto rhs = get_register(next());
-                    if (lhs && rhs) {
-                        return std::make_unique<commands::Assigment>(
-                            *reg, std::make_unique<commands::BinaryOperator>(*lhs, *rhs, op));
-                    }
-                    throw SyntaxError{"Expected registers as arguments"};
+                if (auto bin_op = As<tokens::BinaryOperator>(token)) {  // r0 = + r0 r1
+                    auto lhs = AsThrows<tokens::Register>(next()).reg;
+                    auto rhs = AsThrows<tokens::Register>(next()).reg;
+                    return std::make_unique<commands::Assigment>(
+                        reg->reg, std::make_unique<commands::BinaryOperator>(lhs, rhs, bin_op->op));
                 }
                 throw SyntaxError{"Expected number or operator after \"=\""};
+            }
+            if (Is<tokens::ReturnAssigment>(token)) {
+                auto func = next();
+                auto mem_order = AsThrows<tokens::MemoryOrder>(next()).order;
+                auto mem_at_reg = AsThrows<tokens::MemoryAt>(next()).reg.reg;
+                auto r1 = AsThrows<tokens::Register>(next()).reg;
+                if (Is<tokens::Cas>(func)) {  // todo: example
+                    auto r2 = AsThrows<tokens::Register>(next()).reg;
+                    return std::make_unique<commands::Cas>(reg->reg, mem_order, mem_at_reg, r1, r2);
+                }
+                if (Is<tokens::Fai>(func)) {  // TODO: example
+                    return std::make_unique<commands::Fai>(reg->reg, mem_order, mem_at_reg, r1);
+                }
+                throw SyntaxError{"Expected \"cas\" or \"fai\" after \":=\""};
             }
             throw SyntaxError{"Expected assigment after register"};
         }
@@ -55,9 +65,10 @@ std::unique_ptr<Command> ParseCommand(const tokens::Line& line) {
 
 Code Parse(Tokenizer& tokenizer) {
     Code result;
+    std::unordered_map<std::string, size_t> labels;
     for (size_t line{1}; !tokenizer.IsEnd(); ++line) {
         try {
-            result.push_back(ParseCommand(tokenizer.GetLine()));
+            result.push_back(ParseCommand(tokenizer.GetLine(), labels));
         } catch (SyntaxError& syntax_error) {
             throw SyntaxError{"Line " + std::to_string(line) + ": " + syntax_error.what()};
         }

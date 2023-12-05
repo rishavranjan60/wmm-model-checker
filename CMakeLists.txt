@@ -7,7 +7,8 @@ include_directories(include)
 
 add_library(engine src/tokenizer.cpp
         src/parser.cpp
-        src/code.cpp)
+        src/code.cpp
+        src/program.cpp)
 
 add_executable(executor main.cpp)
 target_link_libraries(executor PRIVATE engine)

@@ -9,7 +9,7 @@ std::unique_ptr<Command> ParseCommand(const tokens::Line& line, std::unordered_m
                                       std::vector<std::pair<std::string, commands::If*>>& without_label,
                                       size_t line_num) {
     tokens::Token token = tokens::Constant{0};
-    auto next = [&line, i = 0, &token](bool check_end = false) mutable {
+    auto next = [&line, i = 0ull, &token](bool check_end = false) mutable {
         if (check_end) {
             if (i < line.size()) {
                 throw SyntaxError{"Expected " + std::to_string(i) + " tokens, found " + std::to_string(line.size())};

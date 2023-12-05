@@ -3,6 +3,7 @@
 #include "tokenizer.h"
 #include "parser.h"
 #include "path_chooser.h"
+#include "interactive_chooser.h"
 
 #include <iostream>
 #include <fstream>
@@ -20,7 +21,7 @@ int main(int argc, char** argv) {
 
     Tokenizer tokenizer{source_file};
     auto code = Parse(tokenizer);
-    Program program(std::move(code), 1, std::make_unique<RandomChooser>(239));
+    Program program(std::move(code), 1, std::make_unique<InteractiveChooser>());
     program.Init(MemoryModel::TSO);
 
     program.Run();

@@ -15,6 +15,8 @@ private:
     size_t threads_count;
     std::unique_ptr<PathChooser> path_chooser;
 
+    size_t alive_threads = -1;
+
 public:
     Program(Code code, size_t threads_count, std::unique_ptr<PathChooser> path_chooser)
         : code{std::move(code)}, threads{}, threads_count{threads_count}, path_chooser{std::move(path_chooser)} {

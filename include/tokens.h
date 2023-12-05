@@ -44,9 +44,10 @@ DEFINE_TOKEN(Store)
 DEFINE_TOKEN(Fence)
 DEFINE_TOKEN(Cas)
 DEFINE_TOKEN(Fai)
+DEFINE_TOKEN(Finish)
 
 using Token = std::variant<Register, BinaryOperator, MemoryOrder, Constant, Label, Goto, MemoryAt, Assigment,
-                           ReturnAssigment, If, Load, Store, Fence, Cas, Fai>;
+                           ReturnAssigment, If, Load, Store, Fence, Cas, Fai, Finish>;
 using Line = std::vector<Token>;
 
 template <typename T>

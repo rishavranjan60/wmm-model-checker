@@ -11,3 +11,6 @@ using Register = int8_t;
 constexpr size_t kRegistersCount = 16;
 
 enum class MemoryModel : int8_t { TSO, PSO };
+
+constexpr unsigned kDecimalDigitsInWord = 10;
+constexpr unsigned kDecimalDigitsInRegistersCount = 2;

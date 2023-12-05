@@ -28,7 +28,7 @@ CLASS Number : public Command {
 
 public:
     Number(Word value) : value(value) {}
-    void Evaluate(ThreadState & state) override { state.registers.back() = value; }
+    void Evaluate(ThreadState& state) override { state.registers.back() = value; }
 };
 
 CLASS Assigment : public Command {

@@ -9,7 +9,7 @@ using namespace commands;
 
 namespace {
 
-template<class T>
+template <class T>
 T* As(Command* cmd) {
     auto* res = dynamic_cast<T*>(cmd);
     REQUIRE(res);
@@ -27,7 +27,8 @@ Code GetCode(std::string str, size_t lines_count = 1) {
 TEST_CASE("Assigment number") {
     auto lines = GetCode(
         "r3 = 42\n\t"
-        "r0 = 1234567890", 2);
+        "r0 = 1234567890",
+        2);
     auto* assigment = As<Assigment>(lines[0].get());
     auto* rhs = As<Number>(assigment->rhs.get());
     REQUIRE(assigment->lhs == Register{3});
@@ -39,8 +40,11 @@ TEST_CASE("Assigment number") {
 
     REQUIRE_THROWS_WITH(GetCode("r1 = cas"), "Line 1: Expected number or operator after \"=\"");
 
-    lines = GetCode("bruh: r0 = -5"); // TODO
-
+    lines = GetCode("bruh: r0 = -5");
+    assigment = As<Assigment>(lines[0].get());
+    rhs = As<Number>(assigment->rhs.get());
+    REQUIRE(assigment->lhs == Register{0});
+    REQUIRE(rhs->value == -5);
 }
 
 TEST_CASE("Assigment operator") {
@@ -48,16 +52,13 @@ TEST_CASE("Assigment operator") {
         "r5 = + r0 r1\n\t"
         "r11 = - r4 r4\n   "
         "r2 = * r2 r14\n\n\n"
-        "r14 = / r6 r9", 4);
+        "r14 = / r6 r9",
+        4);
     auto make_data = [](Register lhs, ::BinaryOperator op, Register l, Register r) {
         return std::make_tuple(lhs, op, l, r);
     };
-    auto test_data = {
-        make_data(5, ::BinaryOperator::PLUS, 0, 1),
-        make_data(11, ::BinaryOperator::MINUS, 4, 4),
-        make_data(2, ::BinaryOperator::MULTIPLY, 2, 14),
-        make_data(14, ::BinaryOperator::DIVIDE, 6, 9)
-    };
+    auto test_data = {make_data(5, ::BinaryOperator::PLUS, 0, 1), make_data(11, ::BinaryOperator::MINUS, 4, 4),
+                      make_data(2, ::BinaryOperator::MULTIPLY, 2, 14), make_data(14, ::BinaryOperator::DIVIDE, 6, 9)};
     for (size_t i{}; const auto& [lhs, op, l, r] : test_data) {
         auto* assigment = As<Assigment>(lines[i++].get());
         auto* rhs = As<commands::BinaryOperator>(assigment->rhs.get());
@@ -97,4 +98,69 @@ TEST_CASE("Fai") {
     REQUIRE_THROWS_WITH(GetCode("\n\n\nr2 := RLX RLX #r1 r2"), "Line 1: Expected \"cas\" or \"fai\" after \":=\"");
 }
 
-} // namespace
+TEST_CASE("If") {
+    auto lines = GetCode(
+        "asd: r0 = 1\n"
+        "if r15 goto asd",
+        2);
+    auto* if_st = As<commands::If>(lines[1].get());
+    REQUIRE(if_st->condition == Register{15});
+    REQUIRE(if_st->cmd_num == 0);
+
+    lines = GetCode(
+        "if r15 goto asd\n"
+        "asd: r0 = 1\n",
+        2);
+    if_st = As<commands::If>(lines[0].get());
+    REQUIRE(if_st->condition == Register{15});
+    REQUIRE(if_st->cmd_num == 1);
+
+    REQUIRE_THROWS_AS(GetCode("if r4 goto asd"), SyntaxError);
+    REQUIRE_THROWS_WITH(GetCode("if r4 goto asd"), "Label \"asd\" doesn't exist");
+}
+
+TEST_CASE("Fence") {
+    auto lines = GetCode(
+        "fence RLX\n"
+        "fence SEQ_CST\n"
+        "fence ACQ\n",
+        3);
+    auto* fence = As<commands::Fence>(lines[0].get());
+    REQUIRE(fence->order == MemoryOrder::RLX);
+    fence = As<commands::Fence>(lines[1].get());
+    REQUIRE(fence->order == MemoryOrder::SEQ_CST);
+    fence = As<commands::Fence>(lines[2].get());
+    REQUIRE(fence->order == MemoryOrder::ACQ);
+
+    REQUIRE_THROWS_AS(GetCode("fence"), SyntaxError);
+}
+
+TEST_CASE("Store/Load") {
+    auto lines = GetCode(
+        "aboba: store RLX #r1 r0\n"
+        "load ACQ #r13 r9\n"
+        "store \t\tSEQ_CST #r0 r0",
+        3);
+    auto* store = As<commands::Store>(lines[0].get());
+    REQUIRE(store->order == MemoryOrder::RLX);
+    REQUIRE(store->at == Register{1});
+    REQUIRE(store->reg == Register{0});
+    auto* load = As<commands::Load>(lines[1].get());
+    REQUIRE(load->order == MemoryOrder::ACQ);
+    REQUIRE(load->at == Register{13});
+    REQUIRE(load->reg == Register{9});
+    store = As<commands::Store>(lines[2].get());
+    REQUIRE(store->order == MemoryOrder::SEQ_CST);
+    REQUIRE(store->at == Register{0});
+    REQUIRE(store->reg == Register{0});
+
+    REQUIRE_THROWS_AS(GetCode("store load"), SyntaxError);
+    REQUIRE_THROWS_AS(GetCode("store RLX r0 r0"), SyntaxError);
+    REQUIRE_THROWS_AS(GetCode("load RLX #r0 r0 r0"), SyntaxError);
+}
+
+TEST_CASE("Bad") {
+    REQUIRE_THROWS_WITH(GetCode("#r1"), "Line 1: Unknown command");
+}
+
+}  // namespace

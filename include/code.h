@@ -77,6 +77,45 @@ public:
     void Evaluate(ThreadState & state) override;
 };
 
+CLASS If : public Command {
+    Register condition;
+    size_t cmd_num;
+
+public:
+    If(Register condition) : condition(condition) {}
+    void Evaluate(ThreadState & state) override;
+
+    void SetLabel(size_t num) { cmd_num = num; }
+};
+
+CLASS Fence : public Command {
+    MemoryOrder order;
+
+public:
+    Fence(MemoryOrder order) : order(order) {}
+    void Evaluate(ThreadState & state) override;
+};
+
+CLASS Load : public Command {
+    MemoryOrder order;
+    Register at;
+    Register reg;
+
+public:
+    Load(MemoryOrder order, Register at, Register reg) : order(order), at(at), reg(reg) {}
+    void Evaluate(ThreadState & state) override;
+};
+
+CLASS Store : public Command {
+    MemoryOrder order;
+    Register at;
+    Register reg;
+
+public:
+    Store(MemoryOrder order, Register at, Register reg) : order(order), at(at), reg(reg) {}
+    void Evaluate(ThreadState & state) override;
+};
+
 }  // namespace commands
 
 #undef CLASS

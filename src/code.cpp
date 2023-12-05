@@ -30,4 +30,20 @@ void Cas::Evaluate(ThreadState& state) {
     // TODO
 }
 
+void If::Evaluate(ThreadState& state) {
+    // TODO
+}
+
+void Fence::Evaluate(ThreadState& state) {
+    // TODO
+}
+
+void Load::Evaluate(ThreadState& state) {
+    // TODO
+}
+
+void Store::Evaluate(ThreadState& state) {
+    // TODO
+}
+
 } // namespace commands

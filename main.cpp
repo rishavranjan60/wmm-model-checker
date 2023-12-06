@@ -21,7 +21,7 @@ int main(int argc, char** argv) {
 
     Tokenizer tokenizer{source_file};
     auto code = Parse(tokenizer);
-    Program program(std::move(code), 1, std::make_unique<InteractiveChooser>());
+    Program program(std::move(code), 2, std::make_unique<InteractiveChooser>());
     program.Init(MemoryModel::TSO);
 
     program.Run();

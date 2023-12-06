@@ -159,6 +159,11 @@ TEST_CASE("Store/Load") {
     REQUIRE_THROWS_AS(GetCode("load RLX #r0 r0 r0"), SyntaxError);
 }
 
+TEST_CASE("Finish") {
+    auto lines = GetCode("finish");
+    As<commands::Finish>(lines[0].get());
+}
+
 TEST_CASE("Bad") {
     REQUIRE_THROWS_WITH(GetCode("#r1"), "Line 1: Unknown command");
 }

@@ -83,6 +83,9 @@ std::unique_ptr<Command> ParseCommand(const tokens::Line& line, std::unordered_m
             }
             return std::make_unique<commands::Store>(order, mem_at_reg, reg);
         }
+        if (Is<tokens::Finish>(token)) {
+            return std::make_unique<commands::Finish>();
+        }
         throw SyntaxError{"Unknown command"};
     }();
     next(true);

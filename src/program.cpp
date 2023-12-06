@@ -2,7 +2,9 @@
 
 void Program::Init(MemoryModel memory_model) {
     if (memory_model == MemoryModel::TSO) {
-        threads.resize(threads_count, {&code});
+        for (size_t i{}; i < threads_count; ++i) {
+            threads.emplace_back(&code, nullptr);
+        }
     } else {
         throw std::logic_error{"Unimplemented memory model"};
     }

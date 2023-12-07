@@ -49,12 +49,18 @@ private:
     bool is_end = false;
 
     std::unique_ptr<MemoryView> view;
-
     std::shared_ptr<PathChooser> path_chooser;
 
+    bool skip_silent;
+
 public:
-    Thread(const Code* code, std::unique_ptr<MemoryView> view, std::shared_ptr<PathChooser> path_chooser, size_t thread_id)
-        : state{{}, 0}, code{code}, view{std::move(view)}, path_chooser{std::move(path_chooser)} {
+    Thread(const Code* code, std::unique_ptr<MemoryView> view, std::shared_ptr<PathChooser> path_chooser,
+           size_t thread_id, bool skip_silent = true)
+        : state{{}, 0},
+          code{code},
+          view{std::move(view)},
+          path_chooser{std::move(path_chooser)},
+          skip_silent{skip_silent} {
         state.AuxReg() = thread_id;
     }
 
@@ -62,7 +68,5 @@ public:
 
     bool ExecNext();
     const ThreadState& GetState() const { return state; }
-    void PrintMemView(std::ostream& out = std::cout) const {
-        view->Print(out);
-    }
+    void PrintMemView(std::ostream& out = std::cout) const { view->Print(out); }
 };

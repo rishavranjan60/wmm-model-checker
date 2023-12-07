@@ -20,7 +20,7 @@ public:
             }
             thread_id %= threads.size();
         }
-        throw RuntimeError{"Trying to choose thread, but all threads are finished"};
+        throw std::logic_error{"Trying to choose thread, but all threads are finished"};
     }
 
     bool ExecSilent() override {

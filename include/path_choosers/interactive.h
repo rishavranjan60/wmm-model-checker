@@ -6,11 +6,27 @@
 #include "errors.h"
 
 #include <iostream>
+#include <random>
 
 class InteractiveChooser : public PathChooser {
-private:
+protected:
     std::istream& in;
     std::ostream& out;
+
+    virtual int GetInt(int min, int max) {
+        int inp;
+        while (true) {
+            out << "> ";
+            if (in >> inp) {
+                if (min <= inp && inp <= max) {
+                    return inp;
+                }
+                out << "You should write integer in [" << min << "; " << max << "]\n";
+            } else {
+                throw RuntimeError{"Can't read your choose"};
+            }
+        }
+    }
 
 public:
     InteractiveChooser(std::istream& in = std::cin, std::ostream& out = std::cout) : in(in), out(out) {
@@ -23,18 +39,15 @@ public:
         if (threads.empty()) {
             throw std::logic_error{"No threads in program"};
         }
-        int n;
-        while (in >> n) {
+        int threads_count = threads.size();
+        while (true) {
+            int n = GetInt(-threads_count, threads_count);
             if (n == 0) {
                 memory->Print(out);
                 continue;
             }
             bool thread_choose = n > 0;
             n = (thread_choose ? n : -n) - 1;
-            if (n >= threads.size()) {
-                out << "Thread number out of bounds, threads count: " << threads.size() << '\n';
-                continue;
-            }
             if (thread_choose) {
                 return n;
             }
@@ -43,35 +56,60 @@ public:
             out << "Memory view:\n";
             threads[n].PrintMemView(out);
         }
-        throw RuntimeError{"Input is not integer or ended unexpectedly"};
     }
 
-    int ChooseSilent(const std::string& hint, const std::vector<std::pair<int, std::string>>& variants) override {
+    int ChooseSilent(const std::string& hint, const std::vector<std::string>& variants) override {
+        if (variants.empty()) {
+            throw std::logic_error{"ChooseSilent with empty variants [InteractiveChooser]"};
+        }
         out << "Choose: " << hint << '\n';
-        for (const auto& [value, meaning] : variants) {
-            out << value << ": " << meaning << '\n';
+        for (int i{}; const auto& meaning : variants) {
+            out << i++ << ": " << meaning << '\n';
         }
-        int res;
-        while (in >> res) {
-            if (std::find_if(variants.begin(), variants.end(), [&](const auto& item) { return item.first == res; }) !=
-                variants.end()) {
-                return res;
-            }
-            out << "No value \"" << res << "\" in list, try again\n";
-        }
-        throw RuntimeError{"Can't read your choose"};
+        return GetInt(0, variants.size() - 1);
     }
 
     bool ExecSilent() override {
-        out << "0 - Execute silent step\n";
-        out << "1 - Execute non-silent step\n";
-        int res;
-        while (in >> res) {
-            if (res == 0 || res == 1) {
-                return !res;
-            }
-            out << "Write only 0 or 1\n";
+        out << "0 - Execute non-silent step\n";
+        out << "1 - Execute silent step\n";
+        return GetInt(0, 1);
+    }
+};
+
+class InteractiveRandomChooser : public InteractiveChooser {
+private:
+    std::mt19937_64 random_generator;
+    bool view_state = false;
+
+protected:
+    int GetInt(int min, int max) override {
+        int res = std::uniform_int_distribution<int>{min, max}(random_generator);
+        out << "> " << res << '\n';
+        return res;
+    }
+
+public:
+    InteractiveRandomChooser(std::istream& in = std::cin, std::ostream& out = std::cout, size_t seed = 239)
+        : InteractiveChooser(in, out), random_generator{seed} {}
+
+    size_t ChooseThread(const std::vector<Thread>& threads, const std::shared_ptr<const Memory>& memory) override {
+        if (threads.empty()) {
+            throw std::logic_error{"No threads in program"};
         }
-        throw RuntimeError{"Can't read your choose"};
+        auto n = std::uniform_int_distribution<size_t>{0, threads.size() - 1}(random_generator);
+        for (size_t i{}; i < threads.size(); ++i) {
+            if (!threads[n++].IsEnd()) {
+                break;
+            }
+            n %= threads.size();
+        }
+        out << "> " << n-- << '\n';
+        out << "Memory:\n";
+        memory->Print(out);
+        out << "State:\n";
+        threads[n].GetState().Print(out);
+        out << "Memory view:\n";
+        threads[n].PrintMemView(out);
+        return n;
     }
 };

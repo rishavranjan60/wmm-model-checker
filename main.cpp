@@ -22,7 +22,7 @@ int main(int argc, char** argv) {
     Tokenizer tokenizer{source_file};
     auto code = Parse(tokenizer);
     Program program(std::move(code), 2, std::make_unique<InteractiveChooser>());
-    program.Init(MemoryModel::PSO, 16);
+    program.Init(MemoryModel::SEQ_CST, 16);
 
     program.Run();
 

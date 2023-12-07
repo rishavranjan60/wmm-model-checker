@@ -18,6 +18,8 @@ private:
 
     size_t alive_threads;
 
+    bool skip_thread_silent = true;
+
 public:
     Program(Code code, size_t threads_count, std::shared_ptr<PathChooser> path_chooser)
         : code{std::move(code)}, threads{}, threads_count{threads_count}, memory{nullptr}, path_chooser{std::move(path_chooser)} {
@@ -26,4 +28,8 @@ public:
 
     void Init(MemoryModel, size_t memory_size = 1 << 8);
     void Run();
+
+    void SetSkipThreadSilent(bool skip) {
+        skip_thread_silent = skip;
+    }
 };

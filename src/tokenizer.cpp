@@ -24,6 +24,7 @@ tokens::Token TokenFromString(const std::string& str) {
         {"fence", tokens::Fence{}},
         {"cas", tokens::Cas{}},
         {"finish", tokens::Finish{}},
+        {"fail", tokens::Fail{}},
         {"fai", tokens::Fai{}}};
     if (kMap.contains(str)) {
         return kMap.at(str);

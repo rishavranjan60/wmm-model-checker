@@ -53,6 +53,8 @@ TEST_CASE("One token") {
     CheckTokens(lines[0], MemoryAt{tokens::Register{10}});
     lines = GetLines("finish");
     CheckTokens(lines[0], tokens::Finish{});
+    lines = GetLines("fail");
+    CheckTokens(lines[0], tokens::Fail{});
 }
 
 TEST_CASE("One line") {
@@ -70,11 +72,12 @@ TEST_CASE("One line") {
 }
 
 TEST_CASE("Couple lines") {
-    auto lines = GetLines("fence REL_ACQ\n\t r4 := fai ACQ #r0 r9\n  finish", 3);
+    auto lines = GetLines("fence REL_ACQ\n\t r4 := fai ACQ #r0 r9\n  finish\n\n\nfail", 4);
     CheckTokens(lines[0], Fence{}, tokens::MemoryOrder{::MemoryOrder::REL_ACQ});
     CheckTokens(lines[1], tokens::Register{4}, ReturnAssigment{}, Fai{}, tokens::MemoryOrder{::MemoryOrder::ACQ},
                 MemoryAt{tokens::Register{0}}, tokens::Register{9});
     CheckTokens(lines[2], tokens::Finish{});
+    CheckTokens(lines[3], tokens::Fail{});
 }
 
 }  // namespace

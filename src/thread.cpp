@@ -15,13 +15,20 @@ bool Thread::ExecNext() {
             return false;
         }
     }
-    if (static_cast<size_t>(state.rip) >= code->size()) {
-        throw RuntimeError{"\"rip\" out of bounds"};
-    }
-    code->at(state.rip)->Evaluate(state, view.get());
-    ++state.rip;
-    if (state.rip == -1) {
-        return is_end = true;
+    while (true) {
+        if (static_cast<size_t>(state.rip) >= code->size()) {
+            throw RuntimeError{"\"rip\" out of bounds"};
+        }
+        auto& cmd = code->at(state.rip);
+        bool is_silent = dynamic_cast<ThreadSilentCommand*>(cmd.get());
+        cmd->Evaluate(state, view.get());
+        ++state.rip;
+        if (state.rip == -1) {
+            return is_end = true;
+        }
+        if (!skip_silent || !is_silent) {
+            return false;
+        }
     }
     return false;
 }

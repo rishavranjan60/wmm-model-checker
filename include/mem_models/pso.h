@@ -46,13 +46,16 @@ public:
         if (buffers.empty()) {
             throw std::logic_error{"DoSilent with empty buffers [PSO]"};
         }
-        std::vector<std::pair<int, std::string>> variants;
+        std::vector<std::string> variants;
         variants.reserve(buffers.size());
+        std::vector<Word> addresses;
+        addresses.reserve(buffers.size());
         for (const auto& [addr, buffer] : buffers) {
-            variants.emplace_back(addr, '#' + std::to_string(addr));
+            variants.emplace_back('#' + std::to_string(addr));
+            addresses.emplace_back(addr);
         }
-        int addr = path_chooser->ChooseSilent("Address for propagation", variants);
-        Propagate(addr);
+        int res = path_chooser->ChooseSilent("Address for propagation", variants);
+        Propagate(addresses[res]);
     }
 
     bool HasSilent() const override {

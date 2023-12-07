@@ -161,11 +161,15 @@ TEST_CASE("Store/Load") {
     REQUIRE_THROWS_AS(GetCode("load RLX #r0 r0 r0"), SyntaxError);
 }
 
-TEST_CASE("Finish") {
-    auto lines = GetCode("finish");
+TEST_CASE("Finish/Fail") {
+    auto lines = GetCode("finish\nfail", 2);
     As<commands::Finish>(lines[0].get());
+    As<commands::Fail>(lines[1].get());
 }
 
-TEST_CASE("Bad") { REQUIRE_THROWS_WITH(GetCode("#r1"), "Line 1: Unknown command"); }
+TEST_CASE("Bad") {
+    REQUIRE_THROWS_WITH(GetCode("#r1"), "Line 1: Unknown command");
+    REQUIRE_THROWS_AS(GetCode("fail fail"), SyntaxError);
+}
 
 }  // namespace

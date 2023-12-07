@@ -8,7 +8,7 @@ void Program::Init(MemoryModel memory_model, size_t memory_size) {
     auto default_init_threads = [&]<class View> {
         memory = std::make_shared<ArrayMemory>(memory_size);
         for (size_t i{}; i < threads_count; ++i) {
-            threads.emplace_back(&code, std::make_unique<View>(memory, path_chooser), path_chooser, i);
+            threads.emplace_back(&code, std::make_unique<View>(memory, path_chooser), path_chooser, i, skip_thread_silent);
         }
     };
     switch (memory_model) {

@@ -39,6 +39,8 @@ TEST_CASE("One token") {
     CheckTokens(lines[0], Assigment{});
     lines = GetLines("* ");
     CheckTokens(lines[0], tokens::BinaryOperator{::BinaryOperator::MULTIPLY});
+    lines = GetLines("\n\n^\n");
+    CheckTokens(lines[0], tokens::BinaryOperator{::BinaryOperator::XOR});
     lines = GetLines(" goto bimbimbambam");
     CheckTokens(lines[0], Goto{{"bimbimbambam"}});
     lines = GetLines("cas    ");

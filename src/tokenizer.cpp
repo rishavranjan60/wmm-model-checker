@@ -9,6 +9,7 @@ tokens::Token TokenFromString(const std::string& str) {
         {"-", tokens::BinaryOperator{BinaryOperator::MINUS}},
         {"*", tokens::BinaryOperator{BinaryOperator::MULTIPLY}},
         {"/", tokens::BinaryOperator{BinaryOperator::DIVIDE}},
+        {"^", tokens::BinaryOperator{BinaryOperator::XOR}},
         {"RLX", tokens::MemoryOrder{MemoryOrder::RLX}},
         {"REL", tokens::MemoryOrder{MemoryOrder::REL}},
         {"ACQ", tokens::MemoryOrder{MemoryOrder::ACQ}},

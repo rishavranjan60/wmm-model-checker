@@ -52,13 +52,15 @@ TEST_CASE("Assigment operator") {
         "r5 = + r0 r1\n\t"
         "r11 = - r4 r4\n   "
         "r2 = * r2 r14\n\n\n"
-        "r14 = / r6 r9",
-        4);
+        "r14 = / r6 r9\t\n"
+        "r15 = ^ r0 r1",
+        5);
     auto make_data = [](Register lhs, ::BinaryOperator op, Register l, Register r) {
         return std::make_tuple(lhs, op, l, r);
     };
     auto test_data = {make_data(5, ::BinaryOperator::PLUS, 0, 1), make_data(11, ::BinaryOperator::MINUS, 4, 4),
-                      make_data(2, ::BinaryOperator::MULTIPLY, 2, 14), make_data(14, ::BinaryOperator::DIVIDE, 6, 9)};
+                      make_data(2, ::BinaryOperator::MULTIPLY, 2, 14), make_data(14, ::BinaryOperator::DIVIDE, 6, 9),
+                      make_data(15, ::BinaryOperator::XOR, 0, 1)};
     for (size_t i{}; const auto& [lhs, op, l, r] : test_data) {
         auto* assigment = As<Assigment>(lines[i++].get());
         auto* rhs = As<commands::BinaryOperator>(assigment->rhs.get());
@@ -164,8 +166,6 @@ TEST_CASE("Finish") {
     As<commands::Finish>(lines[0].get());
 }
 
-TEST_CASE("Bad") {
-    REQUIRE_THROWS_WITH(GetCode("#r1"), "Line 1: Unknown command");
-}
+TEST_CASE("Bad") { REQUIRE_THROWS_WITH(GetCode("#r1"), "Line 1: Unknown command"); }
 
 }  // namespace

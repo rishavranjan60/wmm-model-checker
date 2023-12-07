@@ -19,6 +19,11 @@ void BinaryOperator::Evaluate(ThreadState &state, MemoryView*) {
         case ::BinaryOperator::DIVIDE:
             res = l / r;
             break;
+        case ::BinaryOperator::XOR:
+            res = l ^ r;
+            break;
+        default:
+            throw std::logic_error{"Unimplemented binary operator"};
     }
 }
 

@@ -3,7 +3,7 @@
 #include "defs.h"
 #include "code.h"
 #include "thread.h"
-#include "path_chooser.h"
+#include "path_choosers/path_chooser.h"
 
 #include <vector>
 
@@ -13,16 +13,17 @@ private:
 
     std::vector<Thread> threads;
     size_t threads_count;
-    std::unique_ptr<PathChooser> path_chooser;
+    std::shared_ptr<Memory> memory;
+    std::shared_ptr<PathChooser> path_chooser;
 
-    size_t alive_threads = -1;
+    size_t alive_threads;
 
 public:
-    Program(Code code, size_t threads_count, std::unique_ptr<PathChooser> path_chooser)
-        : code{std::move(code)}, threads{}, threads_count{threads_count}, path_chooser{std::move(path_chooser)} {
+    Program(Code code, size_t threads_count, std::shared_ptr<PathChooser> path_chooser)
+        : code{std::move(code)}, threads{}, threads_count{threads_count}, memory{nullptr}, path_chooser{std::move(path_chooser)} {
         threads.reserve(threads_count);
     }
 
-    void Init(MemoryModel);
+    void Init(MemoryModel, size_t memory_size = 1 << 8);
     void Run();
 };

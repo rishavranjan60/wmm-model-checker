@@ -2,7 +2,8 @@
 
 #include "defs.h"
 #include "errors.h"
-#include "memory_system.h"
+#include "mem_models/memory_system.h"
+#include "path_choosers/path_chooser.h"
 
 #include <array>
 #include <cstdint>
@@ -31,6 +32,8 @@ struct ThreadState {
 
     Word& AuxReg() { return registers.back(); }
 
+    void Print(std::ostream&) const;
+
 private:
     void CheckReg(Register reg) const {
         if (static_cast<size_t>(reg) >= kRegistersCount) {
@@ -38,8 +41,6 @@ private:
         }
     }
 };
-
-std::ostream& operator<<(std::ostream&, const ThreadState&);
 
 class Thread {
 private:
@@ -49,12 +50,19 @@ private:
 
     std::unique_ptr<MemoryView> view;
 
+    std::shared_ptr<PathChooser> path_chooser;
+
 public:
-    Thread(const Code* code, std::unique_ptr<MemoryView> view, Word rip = 0)
-        : state{{}, rip}, code{code}, view{std::move(view)} {}
+    Thread(const Code* code, std::unique_ptr<MemoryView> view, std::shared_ptr<PathChooser> path_chooser, size_t thread_id)
+        : state{{}, 0}, code{code}, view{std::move(view)}, path_chooser{std::move(path_chooser)} {
+        state.AuxReg() = thread_id;
+    }
 
     bool IsEnd() const { return is_end; }
 
     bool ExecNext();
     const ThreadState& GetState() const { return state; }
+    void PrintMemView(std::ostream& out = std::cout) const {
+        view->Print(out);
+    }
 };

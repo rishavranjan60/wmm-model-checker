@@ -9,6 +9,12 @@ bool Thread::ExecNext() {
     if (IsEnd()) {
         throw RuntimeError{"Execute ended thread"};
     }
+    if (view->HasSilent()) {
+        if (path_chooser->ExecSilent()) {
+            view->DoSilent();
+            return false;
+        }
+    }
     if (static_cast<size_t>(state.rip) >= code->size()) {
         throw RuntimeError{"\"rip\" out of bounds"};
     }
@@ -20,12 +26,11 @@ bool Thread::ExecNext() {
     return false;
 }
 
-std::ostream& operator<<(std::ostream& out, const ThreadState& state) {
-    out << "rip: " << state.rip << '\n';
-    for (size_t i{}; const auto& reg : state.registers) {
-        out << 'r' << std::setw(kDecimalDigitsInRegistersCount) << i++ << ": "; // TODO
+void ThreadState::Print(std::ostream& out) const {
+    out << "rip: " << rip << '\n';
+    for (size_t i{}; const auto& reg : registers) {
+        out << 'r' << std::setw(kDecimalDigitsInRegistersCount) << std::left << i++ << ": ";
         out << std::setw(kDecimalDigitsInWord + 1) << reg;
         out << (i % 4 == 0 ? "\n" : " | ");
     }
-    return out;
 }

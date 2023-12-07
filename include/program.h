@@ -16,8 +16,6 @@ private:
     std::shared_ptr<Memory> memory;
     std::shared_ptr<PathChooser> path_chooser;
 
-    size_t alive_threads;
-
     bool skip_thread_silent = true;
 
 public:

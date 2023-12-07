@@ -5,6 +5,7 @@
 #include "mem_models/pso.h"
 
 void Program::Init(MemoryModel memory_model, size_t memory_size) {
+    threads.clear();
     auto default_init_threads = [&]<class View> {
         memory = std::make_shared<ArrayMemory>(memory_size);
         for (size_t i{}; i < threads_count; ++i) {
@@ -24,15 +25,16 @@ void Program::Init(MemoryModel memory_model, size_t memory_size) {
         default:
             throw std::logic_error{"Unimplemented memory model"};
     }
-    alive_threads = threads.size();
 }
 
 void Program::Run() {
     if (!memory) {
         throw RuntimeError{"Run program without init"};
     }
-    while (alive_threads > 0) {
+    while (!threads.empty()) {
         size_t thread_id = path_chooser->ChooseThread(threads, memory);
-        alive_threads -= threads[thread_id].ExecNext();
+        if (threads[thread_id].ExecNext()) {
+            threads.erase(threads.begin() + thread_id);
+        }
     }
 }

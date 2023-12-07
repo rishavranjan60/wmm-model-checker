@@ -35,7 +35,7 @@ public:
         out << "To view memory write 0.\n";
     }
 
-    size_t ChooseThread(const std::vector<Thread>& threads, const std::shared_ptr<const Memory>& memory) override {
+    int ChooseThread(const std::vector<Thread>& threads, const std::shared_ptr<const Memory>& memory) override {
         if (threads.empty()) {
             throw std::logic_error{"No threads in program"};
         }
@@ -79,7 +79,6 @@ public:
 class InteractiveRandomChooser : public InteractiveChooser {
 private:
     std::mt19937_64 random_generator;
-    bool view_state = false;
 
 protected:
     int GetInt(int min, int max) override {
@@ -92,24 +91,18 @@ public:
     InteractiveRandomChooser(std::istream& in = std::cin, std::ostream& out = std::cout, size_t seed = 239)
         : InteractiveChooser(in, out), random_generator{seed} {}
 
-    size_t ChooseThread(const std::vector<Thread>& threads, const std::shared_ptr<const Memory>& memory) override {
+    int ChooseThread(const std::vector<Thread>& threads, const std::shared_ptr<const Memory>& memory) override {
         if (threads.empty()) {
             throw std::logic_error{"No threads in program"};
         }
         auto n = std::uniform_int_distribution<size_t>{0, threads.size() - 1}(random_generator);
-        for (size_t i{}; i < threads.size(); ++i) {
-            if (!threads[n++].IsEnd()) {
-                break;
-            }
-            n %= threads.size();
-        }
-        out << "> " << n-- << '\n';
         out << "Memory:\n";
         memory->Print(out);
         out << "State:\n";
         threads[n].GetState().Print(out);
         out << "Memory view:\n";
         threads[n].PrintMemView(out);
+        out << "> " << n + 1 << '\n';
         return n;
     }
 };

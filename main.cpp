@@ -4,6 +4,7 @@
 #include "parser.h"
 #include "path_choosers/path_chooser.h"
 #include "path_choosers/interactive.h"
+#include "path_choosers/full.h"
 
 #include <iostream>
 #include <fstream>
@@ -21,10 +22,29 @@ int main(int argc, char** argv) {
 
     Tokenizer tokenizer{source_file};
     auto code = Parse(tokenizer);
-    Program program(std::move(code), 2, std::make_unique<InteractiveChooser>());
-    program.Init(MemoryModel::SEQ_CST, 16);
+    constexpr bool is_model_check = false;
+    if (!is_model_check) {
+        Program program(std::move(code), 2, std::make_shared<InteractiveChooser>());
+        program.Init(MemoryModel::PSO, 16);
+        program.Run();
+    } else {
+        auto checker = std::make_shared<FullChooser>();
+        Program program(std::move(code), 2, checker);
 
-    program.Run();
+        try {
+            while (!checker->Finished()) {
+                program.Init(MemoryModel::PSO, 16);
+                program.Run();
+                checker->NextRun();
+            }
+        } catch (FailError&) {
+            auto trace = checker->GetTrace();
+            std::cout << "\"fail\" founded, stacktrace:\n";
+            for (auto i : trace) {
+                std::cout << i << '\n';
+            }
+        }
+    }
 
     return 0;
 }

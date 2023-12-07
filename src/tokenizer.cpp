@@ -59,6 +59,9 @@ void Tokenizer::Next() {
         if (std::all_of(str.begin(), str.end(), [](char c) { return std::isspace(c); })) {
             continue;
         }
+        if (str == "-----") {
+            break;
+        }
         std::stringstream ss{str};
         ss >> str;
         if (str.back() == ':') {

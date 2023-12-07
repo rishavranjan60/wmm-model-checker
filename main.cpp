@@ -2,7 +2,6 @@
 #include "program.h"
 #include "tokenizer.h"
 #include "parser.h"
-#include "path_choosers/path_chooser.h"
 #include "path_choosers/interactive.h"
 #include "path_choosers/full.h"
 
@@ -22,10 +21,11 @@ int main(int argc, char** argv) {
 
     Tokenizer tokenizer{source_file};
     auto code = Parse(tokenizer);
-    constexpr bool is_model_check = false;
+    constexpr bool is_model_check = true;
+    constexpr auto model = MemoryModel::PSO;
     if (!is_model_check) {
         Program program(std::move(code), 2, std::make_shared<InteractiveChooser>());
-        program.Init(MemoryModel::PSO, 16);
+        program.Init(model, 16);
         program.Run();
     } else {
         auto checker = std::make_shared<FullChooser>();
@@ -33,7 +33,7 @@ int main(int argc, char** argv) {
 
         try {
             while (!checker->Finished()) {
-                program.Init(MemoryModel::PSO, 16);
+                program.Init(model, 16);
                 program.Run();
                 checker->NextRun();
             }

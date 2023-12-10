@@ -48,14 +48,12 @@ public:
         return Go(1, threads.size()) - 1;
     }
 
-    int ChooseSilent(const std::string& hint, const std::vector<std::string>& variants) override {
+    int ChooseVariant(const std::vector<std::string>& variants, const std::string&) override {
         if (variants.empty()) {
-            throw std::logic_error{"ChooseSilent with empty variants [InteractiveChooser]"};
+            throw std::logic_error{"ChooseVariant with empty variants [InteractiveChooser]"};
         }
         return Go(0, variants.size() - 1);
     }
-
-    bool ExecSilent() override { return Go(0, 1); }
 
     bool Finished() const { return is_end; }
 

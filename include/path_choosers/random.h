@@ -19,13 +19,7 @@ public:
         return std::uniform_int_distribution<size_t>{0, threads.size() - 1}(random_generator);
     }
 
-    bool ExecSilent() override {
-        static std::bernoulli_distribution rand_bool(0.5);
-        return rand_bool(random_generator);
-    }
-
-    int ChooseSilent(const std::string&, const std::vector<std::pair<int, std::string>>& variants) override {
-        auto choose = std::uniform_int_distribution<size_t>{0, variants.size() - 1}(random_generator);
-        return variants[choose].first;
+    int ChooseVariant(const std::vector<std::string>& variants, const std::string&) override {
+        return std::uniform_int_distribution<size_t>{0, variants.size() - 1}(random_generator);
     }
 };

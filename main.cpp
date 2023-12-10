@@ -4,6 +4,7 @@
 #include "parser.h"
 #include "path_choosers/interactive.h"
 #include "path_choosers/full.h"
+#include "path_choosers/random.h"
 
 #include <iostream>
 #include <fstream>
@@ -24,7 +25,7 @@ int main(int argc, char** argv) {
     constexpr bool is_model_check = true;
     constexpr auto model = MemoryModel::PSO;
     if (!is_model_check) {
-        Program program(std::move(code), 2, std::make_shared<InteractiveChooser>());
+        Program program(std::move(code), 2, std::make_shared<InteractiveRandomChooser>());
         program.Init(model, 16);
         program.Run();
     } else {

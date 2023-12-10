@@ -10,7 +10,8 @@ bool Thread::ExecNext() {
         throw RuntimeError{"Execute ended thread"};
     }
     if (view->HasSilent()) {
-        if (path_chooser->ExecSilent()) {
+        static const std::vector<std::string> variants = { "non-silent step", "silent step"};
+        if (path_chooser->ChooseVariant(variants, "step type")) {
             view->DoSilent();
             return false;
         }

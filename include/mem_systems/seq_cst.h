@@ -1,12 +1,13 @@
 #pragma once
 
-#include "memory_system.h"
+#include "mem_systems/memory_view.h"
+#include "mem_systems/memory.h"
 
 #include <memory>
 
-class DirectView : public MemoryView {
+class DirectView : public WithMemoryAndChooserView<ArrayMemory> {
 public:
-    using MemoryView::MemoryView;
+    using WithMemoryAndChooserView::WithMemoryAndChooserView;
 
     Word Load(Word address, MemoryOrder) override { return memory->Load(address); }
 

@@ -10,7 +10,7 @@ using Word = int32_t;
 using Register = int8_t;
 constexpr size_t kRegistersCount = 16;
 
-enum class MemoryModel : int8_t { SEQ_CST, TSO, PSO };
+enum class MemoryModel : int8_t { SEQ_CST, TSO, PSO, SRA, RA };
 
 constexpr unsigned kDecimalDigitsInWord = 10;
 constexpr unsigned kDecimalDigitsInRegistersCount = 2;

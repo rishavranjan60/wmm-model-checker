@@ -13,6 +13,9 @@ protected:
     std::istream& in;
     std::ostream& out;
 
+    std::string begin_str;
+    std::string end_str;
+
     virtual int GetInt(int min, int max) {
         int inp;
         while (true) {
@@ -29,7 +32,9 @@ protected:
     }
 
 public:
-    InteractiveChooser(std::istream& in = std::cin, std::ostream& out = std::cout) : in(in), out(out) {
+    InteractiveChooser(std::istream& in = std::cin, std::ostream& out = std::cout, std::string begin_str = "->\n",
+                       std::string end_str = "<-\n")
+        : in(in), out(out), begin_str{std::move(begin_str)}, end_str{std::move(end_str)} {
         out << "Write -N to view Nth thread state.\n";
         out << "To choose Nth thread to execute write N.\n";
         out << "To view memory write 0.\n";
@@ -43,7 +48,9 @@ public:
         while (true) {
             int n = GetInt(-threads_count, threads_count);
             if (n == 0) {
+                out << "Memory:\n" << begin_str;
                 memory->Print(out);
+                out << end_str;
                 continue;
             }
             bool thread_choose = n > 0;
@@ -51,28 +58,26 @@ public:
             if (thread_choose) {
                 return n;
             }
-            out << "State:\n";
+
+            out << "State:\n" << begin_str;
             threads[n].GetState().Print(out);
-            out << "Memory view:\n";
+            out << end_str;
+
+            out << "Memory view:\n" << begin_str;
             threads[n].PrintMemView(out);
+            out << end_str;
         }
     }
 
-    int ChooseSilent(const std::string& hint, const std::vector<std::string>& variants) override {
+    int ChooseVariant(const std::vector<std::string>& variants, const std::string& hint) override {
         if (variants.empty()) {
-            throw std::logic_error{"ChooseSilent with empty variants [InteractiveChooser]"};
+            throw std::logic_error{"ChooseVariant with empty variants [InteractiveChooser]"};
         }
         out << "Choose: " << hint << '\n';
         for (int i{}; const auto& meaning : variants) {
             out << i++ << ": " << meaning << '\n';
         }
         return GetInt(0, variants.size() - 1);
-    }
-
-    bool ExecSilent() override {
-        out << "0 - Execute non-silent step\n";
-        out << "1 - Execute silent step\n";
-        return GetInt(0, 1);
     }
 };
 
@@ -88,20 +93,28 @@ protected:
     }
 
 public:
-    InteractiveRandomChooser(std::istream& in = std::cin, std::ostream& out = std::cout, size_t seed = 239)
-        : InteractiveChooser(in, out), random_generator{seed} {}
+    InteractiveRandomChooser(std::istream& in = std::cin, std::ostream& out = std::cout, size_t seed = 239,
+                             std::string begin_str = "->\n", std::string end_str = "<-\n")
+        : InteractiveChooser(in, out, std::move(begin_str), std::move(end_str)), random_generator{seed} {}
 
     int ChooseThread(const std::vector<Thread>& threads, const std::shared_ptr<const Memory>& memory) override {
         if (threads.empty()) {
             throw std::logic_error{"No threads in program"};
         }
         auto n = std::uniform_int_distribution<size_t>{0, threads.size() - 1}(random_generator);
-        out << "Memory:\n";
+
+        out << "Memory:\n" << begin_str;
         memory->Print(out);
-        out << "State:\n";
+        out << end_str;
+
+        out << "State:\n" << begin_str;
         threads[n].GetState().Print(out);
-        out << "Memory view:\n";
+        out << end_str;
+
+        out << "Memory view:\n" << begin_str;
         threads[n].PrintMemView(out);
+        out << end_str;
+
         out << "> " << n + 1 << '\n';
         return n;
     }

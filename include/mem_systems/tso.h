@@ -1,10 +1,11 @@
 #pragma once
 
-#include "memory_system.h"
+#include "mem_systems/memory_view.h"
+#include "mem_systems/memory.h"
 
 #include <deque>
 
-class WriteBufferView : public MemoryView {
+class WriteBufferView : public WithMemoryAndChooserView<ArrayMemory> {
 private:
     std::deque<std::pair<Word, Word>> buffer{}; // first - address; second - value;
 
@@ -15,7 +16,7 @@ private:
     }
 
 public:
-    using MemoryView::MemoryView;
+    using WithMemoryAndChooserView::WithMemoryAndChooserView;
 
     void Store(Word address, Word value, MemoryOrder) override {
         memory->CheckAddress(address);

@@ -1,15 +1,16 @@
 #include "program.h"
 
-#include "mem_models/seq_cst.h"
-#include "mem_models/tso.h"
-#include "mem_models/pso.h"
+#include "mem_systems/seq_cst.h"
+#include "mem_systems/tso.h"
+#include "mem_systems/pso.h"
 
 void Program::Init(MemoryModel memory_model, size_t memory_size) {
     threads.clear();
     auto default_init_threads = [&]<class View> {
-        memory = std::make_shared<ArrayMemory>(memory_size);
+        auto mem = std::make_shared<ArrayMemory>(memory_size);
+        memory = mem;
         for (size_t i{}; i < threads_count; ++i) {
-            threads.emplace_back(&code, std::make_unique<View>(memory, path_chooser), path_chooser, i, skip_thread_silent);
+            threads.emplace_back(&code, std::make_unique<View>(mem, path_chooser), path_chooser, i, skip_thread_silent);
         }
     };
     switch (memory_model) {

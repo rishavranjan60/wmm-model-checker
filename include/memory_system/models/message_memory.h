@@ -36,9 +36,13 @@ public:
     }
 
     View InsertAfterLast(Word address, Word value, std::optional<View> view) {
-        data[address].emplace_back(value, view ? std::move(*view) : init_view);
-        auto& new_view = data[address].back().second.view;
-        new_view[address] = --data[address].cend();
+        return InsertAfter(--data[address].cend(), address, value, std::move(view));
+    }
+
+    View InsertAfter(Stamp stamp, Word address, Word value, std::optional<View> view) {
+        auto it = data[address].emplace(++stamp, value, view ? std::move(*view) : init_view);
+        auto& new_view = it->second.view;
+        new_view[address] = it;
         return new_view;
     }
 

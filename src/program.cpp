@@ -4,6 +4,7 @@
 #include "memory_system/models/tso.h"
 #include "memory_system/models/pso.h"
 #include "memory_system/models/sra.h"
+#include "memory_system/models/ra.h"
 
 void Program::Init(MemoryModel memory_model, size_t memory_size) {
     threads.clear();
@@ -23,6 +24,9 @@ void Program::Init(MemoryModel memory_model, size_t memory_size) {
             break;
         case MemoryModel::PSO:
             default_init_threads.operator()<ArrayMemory, WriteBufferPerLocView>();
+            break;
+        case MemoryModel::RA:
+            default_init_threads.operator()<MessageMemory, TimestampView>();
             break;
         case MemoryModel::SRA:
             default_init_threads.operator()<MessageMemory, GlobalTimestampView>();

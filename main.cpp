@@ -23,10 +23,11 @@ int main(int argc, char** argv) {
     Tokenizer tokenizer{source_file};
     auto code = Parse(tokenizer);
     constexpr bool is_model_check = true;
-    constexpr auto model = MemoryModel::PSO;
+    constexpr size_t kMemSize = 8;
+    constexpr auto model = MemoryModel::SRA;
     if (!is_model_check) {
-        Program program(std::move(code), 2, std::make_shared<InteractiveRandomChooser>());
-        program.Init(model, 16);
+        Program program(std::move(code), 2, std::make_shared<InteractiveChooser>());
+        program.Init(model, kMemSize);
         program.Run();
     } else {
         auto checker = std::make_shared<FullChooser>();
@@ -34,7 +35,7 @@ int main(int argc, char** argv) {
 
         try {
             while (!checker->Finished()) {
-                program.Init(model, 16);
+                program.Init(model, kMemSize);
                 program.Run();
                 checker->NextRun();
             }

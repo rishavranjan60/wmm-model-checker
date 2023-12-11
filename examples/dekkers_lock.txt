@@ -2,27 +2,25 @@ r0 = + r1 r15
 r1 = 1
 r2 = 1
 r3 = 5
-store RLX #r3 r2
-fence RLX
+store SEQ_CST #r3 r2
 if r0 goto t2
 if r1 goto t1
 fail
 t1: r0 = 0
-store RLX #r0 r2
-load RLX #r1 r10
-store RLX #r3 r10
+store SEQ_CST #r0 r2
+load SEQ_CST #r1 r10
+store SEQ_CST #r3 r10
 finish
 t2: r0 = 0
-store RLX #r1 r2
-load RLX #r0 r11
-load RLX #r3 r10
+store SEQ_CST #r1 r2
+load SEQ_CST #r0 r11
+load SEQ_CST #r3 r10
 if r10 goto end
 if r11 goto end
 fail
 end: finish
 
 -----
-Dekker's lock
       z = 1
     x = y = 0
 x   = 1 | y   = 1

@@ -17,6 +17,9 @@ void BinaryOperator::Evaluate(ThreadState &state, MemoryView*) {
             res = l * r;
             break;
         case ::BinaryOperator::DIVIDE:
+            if (r == 0) {
+                throw RuntimeError{"Divide by zero"};
+            }
             res = l / r;
             break;
         case ::BinaryOperator::XOR:

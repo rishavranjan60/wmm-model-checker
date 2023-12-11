@@ -1,7 +1,7 @@
 #pragma once
 
-#include "mem_systems/memory_view.h"
-#include "mem_systems/memory.h"
+#include "memory_system/memory_view.h"
+#include "memory_system/memory.h"
 
 #include <deque>
 #include <unordered_map>
@@ -55,7 +55,7 @@ public:
             variants.emplace_back('#' + std::to_string(addr));
             addresses.emplace_back(addr);
         }
-        int res = path_chooser->ChooseVariant(variants, "Address for propagation");
+        int res = path_chooser->ChooseVariant(variants, "address for propagation");
         Propagate(addresses[res]);
     }
 

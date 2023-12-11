@@ -2,7 +2,7 @@
 
 #include "thread.h"
 #include "defs.h"
-#include "mem_systems/memory_view.h"
+#include "memory_system/memory_view.h"
 
 #include <vector>
 #include <memory>

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "mem_systems/memory_view.h"
-#include "mem_systems/memory.h"
+#include "memory_system/memory_view.h"
+#include "memory_system/models/array_memory.h"
 
 #include <memory>
 

@@ -2,7 +2,7 @@
 
 #include "defs.h"
 #include "errors.h"
-#include "mem_systems/memory_view.h"
+#include "memory_system/memory_view.h"
 #include "path_choosers/path_chooser.h"
 
 #include <array>

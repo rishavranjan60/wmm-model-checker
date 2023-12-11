@@ -1,6 +1,6 @@
 #pragma once
 
-#include "mem_systems/memory.h"
+#include "memory_system/memory.h"
 
 #include <vector>
 #include <random>

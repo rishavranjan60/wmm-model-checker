@@ -9,6 +9,8 @@
 class TimestampView : public WithMemoryAndChooserView<MessageMemory> {
 protected:
     MessageMemory::View view;
+    std::optional<Word> last_store_addr{};
+    std::optional<Word> last_load_addr{};
 
 public:
     TimestampView(std::shared_ptr<MessageMemory> memory, std::shared_ptr<PathChooser> path_chooser)
@@ -29,11 +31,13 @@ public:
             switch (order) {
                 case MemoryOrder::RLX:
                 case MemoryOrder::REL:
+                    last_load_addr = address;
                     break;
                 case MemoryOrder::ACQ:
                 case MemoryOrder::REL_ACQ:
                 case MemoryOrder::SEQ_CST:
                     view = memory->JoinViews(std::move(view), view[address]->second.view);
+                    last_load_addr.reset();
                     break;
                 default:
                     throw std::logic_error{"Unimplemented memory model"};
@@ -51,11 +55,13 @@ public:
         switch (order) {
             case MemoryOrder::RLX:
             case MemoryOrder::ACQ:
+                last_store_addr = address;
                 break;
             case MemoryOrder::REL:
             case MemoryOrder::REL_ACQ:
             case MemoryOrder::SEQ_CST:
                 store_view = std::move(view);
+                last_store_addr.reset();
                 break;
             default:
                 throw std::logic_error{"Unimplemented memory model"};
@@ -63,8 +69,30 @@ public:
         view = memory->InsertAfter(stamp, address, value, std::move(store_view));
     }
 
-    void Fence(MemoryOrder) override {
-        // TODO
+    void Fence(MemoryOrder order) override {
+        switch (order) {
+            case MemoryOrder::RLX:
+                break;
+            case MemoryOrder::REL_ACQ:
+            case MemoryOrder::REL:
+                if (last_store_addr) {
+                    auto value = view[*last_store_addr]->first;
+                    view = memory->InsertAfterLast(*last_store_addr, value, std::move(view));
+                    last_store_addr.reset();
+                }
+                if (order != MemoryOrder::REL_ACQ) {
+                    break;
+                }
+            case MemoryOrder::ACQ:
+                if (last_load_addr) {
+                    auto wrapper = view[*last_load_addr]->second.view;
+                    view = memory->JoinViews(std::move(view), wrapper);
+                    last_load_addr.reset();
+                }
+                break;
+            default:
+                throw std::logic_error{"Unimplemented memory order fence [Release/Acquire]"};
+        }
     }
 
     void DoSilent() override { throw std::logic_error{"DoSilent in SRA"}; }

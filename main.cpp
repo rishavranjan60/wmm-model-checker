@@ -22,9 +22,9 @@ int main(int argc, char** argv) {
 
     Tokenizer tokenizer{source_file};
     auto code = Parse(tokenizer);
-    constexpr bool is_model_check = false;
+    constexpr bool is_model_check = true;
     constexpr size_t kMemSize = 8;
-    constexpr auto model = MemoryModel::RA;
+    constexpr auto model = MemoryModel::SRA;
     if (!is_model_check) {
         Program program(std::move(code), 2, std::make_shared<InteractiveChooser>());
         program.Init(model, kMemSize);

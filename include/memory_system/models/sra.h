@@ -8,6 +8,14 @@
 #include <optional>
 
 class GlobalTimestampView : public TimestampView {
+protected:
+    void ReleaseFence() override {
+        if (last_store_addr) {
+            auto stamp = view[*last_store_addr];
+            view = memory->InsertAfterLast(*last_store_addr, stamp->first, std::move(view));
+            last_store_addr.reset();
+        }
+    }
 public:
     using TimestampView::TimestampView;
 

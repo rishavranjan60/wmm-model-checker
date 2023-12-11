@@ -8,20 +8,22 @@ if r0 goto t2
 if r2 goto t1
 fail
 t1: r0 = 0
-store SEQ_CST #r1 r4
-store SEQ_CST #r2 r5
-load  SEQ_CST #r2 r7
-load  SEQ_CST #r3 r8
+store RLX #r1 r4
+store RLX #r2 r5
+fence REL
+load  ACQ #r2 r7
+load  ACQ #r3 r8
 r0 = ^ r8 r4
 if r0 goto end
 r0 = ^ r7 r4
 if r0 goto end
 fail
 t2: r0 = 0
-store SEQ_CST #r2 r4
-store SEQ_CST #r1 r5
-load  SEQ_CST #r1 r8
-store SEQ_CST #r3 r8
+store RLX #r2 r4
+store RLX #r1 r5
+fence REL
+load  ACQ #r1 r8
+store ACQ #r3 r8
 end: finish
 
 

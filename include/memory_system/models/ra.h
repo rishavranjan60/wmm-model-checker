@@ -12,6 +12,14 @@ protected:
     std::optional<Word> last_store_addr{};
     std::optional<Word> last_load_addr{};
 
+    virtual void ReleaseFence() {
+        if (last_store_addr) {
+            auto stamp = view[*last_store_addr];
+            view = memory->InsertAfter(stamp, *last_store_addr, stamp->first, std::move(view));
+            last_store_addr.reset();
+        }
+    }
+
 public:
     TimestampView(std::shared_ptr<MessageMemory> memory, std::shared_ptr<PathChooser> path_chooser)
         : WithMemoryAndChooserView(std::move(memory), std::move(path_chooser)), view{} {
@@ -73,14 +81,11 @@ public:
         switch (order) {
             case MemoryOrder::RLX:
                 break;
+            case MemoryOrder::SEQ_CST:
             case MemoryOrder::REL_ACQ:
             case MemoryOrder::REL:
-                if (last_store_addr) {
-                    auto value = view[*last_store_addr]->first;
-                    view = memory->InsertAfterLast(*last_store_addr, value, std::move(view));
-                    last_store_addr.reset();
-                }
-                if (order != MemoryOrder::REL_ACQ) {
+                ReleaseFence();
+                if (order == MemoryOrder::REL) {
                     break;
                 }
             case MemoryOrder::ACQ:

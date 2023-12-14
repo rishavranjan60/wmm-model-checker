@@ -54,7 +54,7 @@ public:
         if (lhs.size() != rhs.size()) {
             throw std::logic_error{"Joining views with different size"};
         }
-        auto min = [&](Word addr) {
+        auto max = [&](Word addr) {
             for (auto it = data[addr].begin(); it != data[addr].end(); ++it) {
                 if (it == rhs[addr]) {
                     return lhs[addr];
@@ -66,7 +66,7 @@ public:
             throw std::logic_error{"Address not found"};
         };
         for (Word addr{}; static_cast<size_t>(addr) < rhs.size(); ++addr) {
-            lhs[addr] = min(addr);
+            lhs[addr] = max(addr);
         }
         return lhs;
     }

@@ -9,14 +9,11 @@
 class TimestampView : public WithMemoryAndChooserView<MessageMemory> {
 protected:
     MessageMemory::View view;
-    std::optional<Word> last_store_addr{};
-    std::optional<Word> last_load_addr{};
 
     virtual void ReleaseFence() {
-        if (last_store_addr) {
-            auto stamp = view[*last_store_addr];
-            view = memory->InsertAfter(stamp, *last_store_addr, stamp->first, std::move(view));
-            last_store_addr.reset();
+        for (Word addr{}; static_cast<size_t>(addr) < view.size(); ++addr) {
+            auto stamp = view[addr];
+            view = memory->InsertAfter(stamp, addr, stamp->first, std::move(view));
         }
     }
 
@@ -39,13 +36,11 @@ public:
             switch (order) {
                 case MemoryOrder::RLX:
                 case MemoryOrder::REL:
-                    last_load_addr = address;
                     break;
                 case MemoryOrder::ACQ:
                 case MemoryOrder::REL_ACQ:
                 case MemoryOrder::SEQ_CST:
                     view = memory->JoinViews(std::move(view), view[address]->second.view);
-                    last_load_addr.reset();
                     break;
                 default:
                     throw std::logic_error{"Unimplemented memory model"};
@@ -63,13 +58,11 @@ public:
         switch (order) {
             case MemoryOrder::RLX:
             case MemoryOrder::ACQ:
-                last_store_addr = address;
                 break;
             case MemoryOrder::REL:
             case MemoryOrder::REL_ACQ:
             case MemoryOrder::SEQ_CST:
                 store_view = std::move(view);
-                last_store_addr.reset();
                 break;
             default:
                 throw std::logic_error{"Unimplemented memory model"};
@@ -89,10 +82,9 @@ public:
                     break;
                 }
             case MemoryOrder::ACQ:
-                if (last_load_addr) {
-                    auto wrapper = view[*last_load_addr]->second.view;
+                for (Word addr{}; static_cast<size_t>(addr) < view.size(); ++addr) {
+                    auto wrapper = view[addr]->second.view;
                     view = memory->JoinViews(std::move(view), wrapper);
-                    last_load_addr.reset();
                 }
                 break;
             default:

@@ -10,10 +10,9 @@
 class GlobalTimestampView : public TimestampView {
 protected:
     void ReleaseFence() override {
-        if (last_store_addr) {
-            auto stamp = view[*last_store_addr];
-            view = memory->InsertAfterLast(*last_store_addr, stamp->first, std::move(view));
-            last_store_addr.reset();
+        for (Word addr{}; static_cast<size_t>(addr) < view.size(); ++addr) {
+            auto stamp = view[addr];
+            view = memory->InsertAfterLast(addr, stamp->first, std::move(view));
         }
     }
 public:

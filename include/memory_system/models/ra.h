@@ -39,9 +39,11 @@ public:
                     break;
                 case MemoryOrder::ACQ:
                 case MemoryOrder::REL_ACQ:
-                case MemoryOrder::SEQ_CST:
-                    view = memory->JoinViews(std::move(view), view[address]->second.view);
+                case MemoryOrder::SEQ_CST: {
+                    auto t = view[address]->second.view;
+                    view = memory->JoinViews(std::move(view), t);
                     break;
+                }
                 default:
                     throw std::logic_error{"Unimplemented memory model"};
             }

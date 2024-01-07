@@ -53,6 +53,8 @@ private:
 
     bool skip_silent;
 
+    bool Execute();
+
 public:
     Thread(const Code* code, std::unique_ptr<MemoryView> view, std::shared_ptr<PathChooser> path_chooser,
            size_t thread_id, bool skip_silent = true)
@@ -62,11 +64,18 @@ public:
           path_chooser{std::move(path_chooser)},
           skip_silent{skip_silent} {
         state.AuxReg() = thread_id;
+        if (skip_silent) {
+            Execute();
+        }
     }
 
     bool IsEnd() const { return is_end; }
 
     bool ExecNext();
+    void PrintCurrentCommand(std::ostream& out = std::cout) const;
     const ThreadState& GetState() const { return state; }
-    void PrintMemView(std::ostream& out = std::cout) const { view->Print(out); }
+    void PrintMemView(std::ostream& out = std::cout) const {
+        PrintCurrentCommand(out);
+        view->Print(out);
+    }
 };

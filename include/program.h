@@ -27,7 +27,7 @@ public:
     void Init(MemoryModel, size_t memory_size = 1 << 8);
     void Run();
 
-    void SetSkipThreadSilent(bool skip) {
+    void SetSkipThreadSilent(bool skip = true) {
         skip_thread_silent = skip;
     }
 };

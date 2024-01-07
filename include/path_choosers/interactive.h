@@ -32,9 +32,12 @@ protected:
     }
 
 public:
-    InteractiveChooser(std::istream& in = std::cin, std::ostream& out = std::cout, std::string begin_str = "->\n",
-                       std::string end_str = "<-\n")
-        : in(in), out(out), begin_str{std::move(begin_str)}, end_str{std::move(end_str)} {
+    InteractiveChooser(std::istream& in = std::cin, std::ostream& out = std::cout,
+                       std::string begin_str = "->\n", std::string end_str = "<-\n")
+        : in{in}, out{out}, begin_str{std::move(begin_str)}, end_str{std::move(end_str)} {
+    }
+
+    void PrintHint(std::ostream &) override {
         out << "Write -N to view Nth thread state.\n";
         out << "To choose Nth thread to execute write N.\n";
         out << "To view memory write 0.\n";
@@ -44,6 +47,12 @@ public:
         if (threads.empty()) {
             throw std::logic_error{"No threads in program"};
         }
+        out << "Threads:\n" << begin_str;
+        for (size_t i{}; const Thread& thread : threads) {
+            out << ++i << ": ";
+            thread.PrintCurrentCommand();
+        }
+        out << end_str;
         int threads_count = threads.size();
         while (true) {
             int n = GetInt(-threads_count, threads_count);

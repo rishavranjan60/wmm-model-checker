@@ -1,0 +1,30 @@
+r0 = + r0 r15
+r1 = 1
+r6 = 1
+r7 = 2
+if r0 goto t2
+if r1 goto t1
+bad: fail
+t1: r10 := fai SEQ_CST #r5 r1
+if r10 goto end
+store SEQ_CST #r6 r1
+fence SEQ_CST
+load SEQ_CST #r7 r0
+if r0 goto bad
+finish
+t2: r10 := fai SEQ_CST #r5 r1
+if r10 goto end
+store SEQ_CST #r7 r1
+fence SEQ_CST
+load SEQ_CST #r6 r0
+if r0 goto bad
+end: finish
+
+-----
+                  x = y = z = 0
+             x - #r5, y - #r6, z - #r7
+r10 = fai(x, 1)         | r10 = fai(x, 1)
+if r10 == 1 then finish | if r10 == 1 then finish
+y = 1                   | z = 1
+fence                   | fence
+assert z == 0           | assert y == 0

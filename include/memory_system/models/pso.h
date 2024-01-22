@@ -37,6 +37,14 @@ public:
         return memory->Load(address);
     }
 
+    Word Fai(Word address, Word value, MemoryOrder) override {
+        auto res = MemoryView::Fai(address, value, MemoryOrder::SEQ_CST);
+        while (buffers.contains(address)) {
+            Propagate(address);
+        }
+        return res;
+    }
+
     void Fence(MemoryOrder) override {
         while (!buffers.empty()) {
             Propagate(buffers.begin()->first);

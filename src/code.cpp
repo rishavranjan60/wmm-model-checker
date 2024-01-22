@@ -31,17 +31,11 @@ void BinaryOperator::Evaluate(ThreadState &state, MemoryView*) {
 }
 
 void Fai::Evaluate(ThreadState& state, MemoryView* view) {
-    auto prev = view->Load(state[at], order);
-    view->Store(state[at], prev + state[add], order);
-    state[res] = prev;
+    state[res] = view->Fai(state[at], state[add], order);
 }
 
 void Cas::Evaluate(ThreadState& state, MemoryView* view) {
-    auto prev = view->Load(state[at], order);
-    if (prev == state[expected]) {
-        std::swap(state[at], state[desired]);
-    }
-    state[res] = prev;
+    state[res] = view->Cas(state[at], state[expected], state[desired], order);
 }
 
 void If::Evaluate(ThreadState& state, MemoryView*) {

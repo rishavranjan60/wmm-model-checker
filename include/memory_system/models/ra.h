@@ -72,6 +72,14 @@ public:
         view = memory->InsertAfter(stamp, address, value, std::move(store_view));
     }
 
+    Word Fai(Word address, Word value, MemoryOrder order) override {
+        return MemoryView::Fai(address, value, order); // TODO
+    }
+
+    Word Cas(Word address, Word expected, Word desired, MemoryOrder order) override {
+        return MemoryView::Cas(address, expected, desired, order); // TODO
+    }
+
     void Fence(MemoryOrder order) override {
         switch (order) {
             case MemoryOrder::RLX:

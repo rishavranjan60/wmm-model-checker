@@ -32,6 +32,18 @@ public:
         return memory->Load(address);
     }
 
+    Word Fai(Word address, Word value, MemoryOrder) override {
+        auto res = MemoryView::Fai(address, value, MemoryOrder::SEQ_CST);
+        Fence(MemoryOrder::SEQ_CST);
+        return res;
+    }
+
+    Word Cas(Word address, Word expected, Word desired, MemoryOrder) override {
+        auto res = MemoryView::Cas(address, expected, desired, MemoryOrder::SEQ_CST);
+        Fence(MemoryOrder::SEQ_CST);
+        return res;
+    }
+
     void Fence(MemoryOrder) override {
         while (!buffer.empty()) {
             Propagate();

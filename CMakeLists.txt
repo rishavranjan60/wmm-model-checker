@@ -8,7 +8,8 @@ add_library(engine src/tokenizer.cpp
         src/parser.cpp
         src/code.cpp
         src/program.cpp
-        src/thread.cpp)
+        src/thread.cpp
+        src/defs.cpp)
 
 target_compile_options(engine PRIVATE -Wall -Wextra -Wpedantic)
 

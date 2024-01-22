@@ -4,6 +4,7 @@
 #include "path_choosers/path_chooser.h"
 
 #include <memory>
+#include <functional>
 
 class MemoryView {
 public:
@@ -14,6 +15,20 @@ public:
     virtual bool HasSilent() const = 0;
     virtual void Print(std::ostream&) const = 0;
     virtual ~MemoryView() = default;
+
+    virtual Word Cas(Word address, Word expected, Word desired, MemoryOrder order) {
+        auto prev = Load(address, order);
+        if (prev == expected) {
+            Store(address, desired, order);
+        }
+        return prev;
+    }
+
+    virtual Word Fai(Word address, Word value, MemoryOrder order) {
+        auto prev = Load(address, order);
+        Store(address, prev + value, order);
+        return prev;
+    }
 };
 
 template <class MemType>

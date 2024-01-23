@@ -19,7 +19,7 @@ private:
 
     int Go(int min, int max) {
         if (cur == path.size()) {
-            path.emplace_back(min, max);
+            path.push_back({min, max});
         }
         if (min != path[cur].min || max != path[cur].max) {
             throw std::logic_error{"Go params don't match"};

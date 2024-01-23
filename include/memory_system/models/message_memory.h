@@ -39,7 +39,7 @@ public:
 
     Stamp InsertAfter(Stamp stamp, Word address, Word value, View view, bool need_hook = false) {
         CheckAddress(address);
-        auto it = data[address].emplace(++stamp, value, std::move(view), need_hook);
+        auto it = data[address].insert(++stamp, {value, std::move(view), need_hook});
         return it->view[address] = it;
     }
 

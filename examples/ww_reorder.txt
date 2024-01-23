@@ -23,7 +23,7 @@ store RLX #r2 r4
 store RLX #r1 r5
 fence REL
 load  ACQ #r1 r8
-store ACQ #r3 r8
+store REL #r3 r8
 end: finish
 
 

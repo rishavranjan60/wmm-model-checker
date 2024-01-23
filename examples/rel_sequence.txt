@@ -1,0 +1,31 @@
+r0 = + r0 r15
+r1 = 1
+r2 = 2
+r3 = 3
+r6 = 1
+if r0 goto t2+
+if r1 goto t1
+t2+: r0 = - r0 r1
+if r0 goto t3
+if r1 goto t2
+t1: store RLX #r5 r1
+store REL #r6 r1
+store RLX #r6 r2
+finish
+t2: r14 := fai RLX #r6 r1
+finish
+t3: load ACQ #r6 r10
+load RLX #r5 r11
+if r11 goto end
+r0 = ^ r10 r3
+if r0 goto end
+fail
+end: finish
+
+-----
+          x = y = 0
+      x - #r5, y - #r6
+x = 1 (RLX)  |           | r10 = y (ACQ)
+y = 1 (REL)  | fai(y, 1) | r11 = x (RLX)
+y = 2 (RLX)  |           | assert not r10 == 3 and r11 == 0
+

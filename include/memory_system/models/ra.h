@@ -37,8 +37,9 @@ private:
         }
         switch (order) {
             case MemoryOrder::RLX:
-            case MemoryOrder::ACQ:
                 break;
+            case MemoryOrder::ACQ:
+                throw RuntimeError{"store ACQ access"};
             case MemoryOrder::REL:
             case MemoryOrder::REL_ACQ:
                 rel[address] = cur;
@@ -66,8 +67,9 @@ private:
             acq = memory->JoinViews(acq, stamp->view);
             switch (order) {
                 case MemoryOrder::RLX:
-                case MemoryOrder::REL:
                     break;
+                case MemoryOrder::REL:
+                    throw RuntimeError{"load REL access"};
                 case MemoryOrder::ACQ:
                 case MemoryOrder::REL_ACQ:
                     cur = acq;

@@ -1,0 +1,32 @@
+r0 = + r0 r15
+r1 = 1
+r6 = 1
+r7 = 2
+if r0 goto t2
+if r1 goto t1
+bad: fail
+t1: store RLX #r5 r1
+fence SEQ_CST
+load RLX #r6 r10
+load ACQ #r7 r11
+if r10 goto end
+if r11 goto check
+finish
+check: r11 = - r11 r1
+if r11 goto end
+fail
+t2: store RLX #r6 r1
+fence SEQ_CST
+load RLX #r5 r11
+r11 = + r1 r11
+store REL #r7 r11
+end: finish
+
+-----
+      x = y = z = 0
+ x - #r5, y - #r6, z - #r7
+x = 1 (RLX)   | y = 1 (RLX)
+fence (SC)    | fence (SC)
+r10 = y (RLX) | r11 = x (RLX)
+r11 = z (ACQ) | z = r11 + 1 (REL)
+assert not r10 == 0 and r11 == 1 | skip

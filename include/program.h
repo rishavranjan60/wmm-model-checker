@@ -30,4 +30,8 @@ public:
     void SetSkipThreadSilent(bool skip = true) {
         skip_thread_silent = skip;
     }
+
+    void SetVerbosity(bool is_verbose) {
+        memory->SetVerbosity(is_verbose);
+    }
 };

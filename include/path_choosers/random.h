@@ -10,7 +10,7 @@ private:
     std::mt19937_64 random_generator;
 
 public:
-    RandomChooser(size_t seed) : random_generator{seed} {}
+    RandomChooser(size_t seed = 239) : random_generator{seed} {}
 
     int ChooseThread(const std::vector<Thread>& threads, const std::shared_ptr<const Memory> &) override {
         if (threads.empty()) {

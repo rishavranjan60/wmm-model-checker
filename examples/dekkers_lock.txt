@@ -2,19 +2,19 @@ r0 = + r1 r15
 r1 = 1
 r2 = 1
 r3 = 5
-store SEQ_CST #r3 r2
+store REL #r3 r2
 if r0 goto t2
 if r1 goto t1
 fail
 t1: r0 = 0
-store SEQ_CST #r0 r2
-load SEQ_CST #r1 r10
-store SEQ_CST #r3 r10
+store REL #r0 r2
+load ACQ #r1 r10
+store REL #r3 r10
 finish
 t2: r0 = 0
-store SEQ_CST #r1 r2
-load SEQ_CST #r0 r11
-load SEQ_CST #r3 r10
+store REL #r1 r2
+load ACQ #r0 r11
+load ACQ #r3 r10
 if r10 goto end
 if r11 goto end
 fail

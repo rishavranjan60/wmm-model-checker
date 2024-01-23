@@ -30,5 +30,6 @@ public:
             out << std::setw(kDecimalDigitsInWord + 1) << std::left << value << (i % kWordsInOneRow == 0 ? '\n' : ' ');
         }
     }
-};
 
+    void SetVerbosity(bool) override {}
+};

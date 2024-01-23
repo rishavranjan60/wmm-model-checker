@@ -3,7 +3,6 @@
 #include "memory_system/models/seq_cst.h"
 #include "memory_system/models/tso.h"
 #include "memory_system/models/pso.h"
-#include "memory_system/models/sra.h"
 #include "memory_system/models/ra.h"
 
 void Program::Init(MemoryModel memory_model, size_t memory_size) {
@@ -26,10 +25,10 @@ void Program::Init(MemoryModel memory_model, size_t memory_size) {
             default_init_threads.operator()<ArrayMemory, WriteBufferPerLocView>();
             break;
         case MemoryModel::RA:
-            default_init_threads.operator()<MessageMemory, TimestampView>();
+            default_init_threads.operator()<MessageMemory, TimestampView<RAWeakness::Weak>>();
             break;
         case MemoryModel::SRA:
-            default_init_threads.operator()<MessageMemory, GlobalTimestampView>();
+            default_init_threads.operator()<MessageMemory, TimestampView<RAWeakness::Strong>>();
             break;
         default:
             throw std::logic_error{"Unimplemented memory model"};

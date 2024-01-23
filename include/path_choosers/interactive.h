@@ -37,10 +37,10 @@ public:
         : in{in}, out{out}, begin_str{std::move(begin_str)}, end_str{std::move(end_str)} {
     }
 
-    void PrintHint(std::ostream &) override {
-        out << "Write -N to view Nth thread state.\n";
-        out << "To choose Nth thread to execute write N.\n";
-        out << "To view memory write 0.\n";
+    void PrintHelp(std::ostream& help_out) override {
+        help_out << "Write -N to view Nth thread state.\n";
+        help_out << "To choose Nth thread to execute write N.\n";
+        help_out << "To view memory write 0.\n";
     }
 
     int ChooseThread(const std::vector<Thread>& threads, const std::shared_ptr<const Memory>& memory) override {
@@ -75,6 +75,7 @@ public:
             out << "Memory view:\n" << begin_str;
             threads[n].PrintMemView(out);
             out << end_str;
+            threads[n].PrintCurrentCommand(out);
         }
     }
 
@@ -123,6 +124,8 @@ public:
         out << "Memory view:\n" << begin_str;
         threads[n].PrintMemView(out);
         out << end_str;
+
+        threads[n].PrintCurrentCommand(out);
 
         out << "> " << n + 1 << '\n';
         return n;

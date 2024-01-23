@@ -5,18 +5,18 @@ r7 = 2
 if r0 goto t2
 if r1 goto t1
 bad: fail
-t1: r10 := fai SEQ_CST #r5 r1
+t1: r10 := fai REL_ACQ #r5 r1
 if r10 goto end
-store SEQ_CST #r6 r1
+store REL #r6 r1
 fence SEQ_CST
-load SEQ_CST #r7 r0
+load ACQ #r7 r0
 if r0 goto bad
 finish
-t2: r10 := fai SEQ_CST #r5 r1
+t2: r10 := fai REL_ACQ #r5 r1
 if r10 goto end
-store SEQ_CST #r7 r1
+store REL #r7 r1
 fence SEQ_CST
-load SEQ_CST #r6 r0
+load ACQ #r6 r0
 if r0 goto bad
 end: finish
 

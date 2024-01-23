@@ -6,11 +6,10 @@ t1: r0 = 0
 r1 = 1
 load ACQ #r1 r11
 load RLX #r0 r10
-r0 = + r1 r10
-r1 = ^ r0 r11
-if r1 goto end
-fail
+if r11 goto check
 end: finish
+check: if r10 goto end
+fail
 t2: r0 = 0
 r1 = 1
 r2 = 1
@@ -20,6 +19,6 @@ finish
 
 -----
     x = y = 0
-r11 = y | x = 1
-r10 = x | y = 1
-assert r11 == 0 && r10 == 1 | skip
+r11 = y (ACQ) | x = 1 (RLX)
+r10 = x (RLX) | y = 1 (REL)
+assert not r10 == 0 && r11 == 1 | skip

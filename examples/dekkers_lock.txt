@@ -25,4 +25,4 @@ end: finish
     x = y = 0
 x   = 1 | y   = 1
 r10 = y | r11 = x
-z = r10 | assert z == 0 && r11 == 0
+z = r10 | assert not z == 0 && r11 == 0

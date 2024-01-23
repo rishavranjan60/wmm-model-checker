@@ -91,6 +91,7 @@ int main(int argc, char** argv) {
             for (auto i : trace) {
                 std::cout << i << '\n';
             }
+            return 1;
         }
     }
 

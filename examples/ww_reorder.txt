@@ -33,4 +33,4 @@ x  = 4 | y  = 4
 y  = 5 | x  = 5
 r7 = y | r8 = x
 r8 = z | z  = r8
-assert r7 == r8 == 4 | skip
+assert not r7 == r8 == 4 | skip

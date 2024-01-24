@@ -16,5 +16,6 @@ target_compile_options(engine PRIVATE -Wall -Wextra -Wpedantic)
 add_executable(executor main.cpp)
 target_link_libraries(executor PRIVATE engine)
 
-# TODO: add if
-add_subdirectory(tests)
+if (ENABLE_TESTS)
+    add_subdirectory(tests)
+endif ()

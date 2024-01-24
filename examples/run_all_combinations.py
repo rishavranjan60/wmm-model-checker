@@ -31,7 +31,7 @@ results: [[int]] = [
     # sc_fence:
     [0, 0, 0, 0, 0],
     # rel_sequence:
-    [0, 0, 1, 0, 0]
+    [0, 0, 1, 1, 0]
 ]
 
 for ex_num, (example, threads_count) in enumerate(examples):

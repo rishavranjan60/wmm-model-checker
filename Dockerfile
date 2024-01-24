@@ -11,4 +11,4 @@ COPY src/ srcs/src/
 COPY main.cpp srcs/
 COPY CMakeLists.txt srcs/
 RUN mkdir build && cd build && cmake ../srcs && make
-COPY examples/ /
+COPY examples/ /build/

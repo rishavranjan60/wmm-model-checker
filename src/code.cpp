@@ -9,22 +9,22 @@ void BinaryOperator::Evaluate(ThreadState& state, MemoryView*) {
     switch (op) {
         case ::BinaryOperator::PLUS:
             res = l + r;
-        break;
+            break;
         case ::BinaryOperator::MINUS:
             res = l - r;
-        break;
+            break;
         case ::BinaryOperator::MULTIPLY:
             res = l * r;
-        break;
+            break;
         case ::BinaryOperator::DIVIDE:
             if (r == 0) {
                 throw RuntimeError{"Divide by zero"};
             }
-        res = l / r;
-        break;
+            res = l / r;
+            break;
         case ::BinaryOperator::XOR:
             res = l ^ r;
-        break;
+            break;
         default:
             throw std::logic_error{"Unimplemented binary operator"};
     }

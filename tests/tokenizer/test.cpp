@@ -72,8 +72,8 @@ TEST_CASE("One line") {
 TEST_CASE("Couple lines") {
     auto lines = GetLines("fence REL_ACQ\n\t r4 := fai ACQ #r0 r9\n  finish\n\n\nfail", 4);
     CheckTokens(lines[0], tokens::Fence{}, tokens::MemoryOrder{::MemoryOrder::REL_ACQ});
-    CheckTokens(lines[1], tokens::Register{4}, tokens::ReturnAssigment{}, tokens::Fai{}, tokens::MemoryOrder{::MemoryOrder::ACQ},
-                tokens::MemoryAt{tokens::Register{0}}, tokens::Register{9});
+    CheckTokens(lines[1], tokens::Register{4}, tokens::ReturnAssigment{}, tokens::Fai{},
+                tokens::MemoryOrder{::MemoryOrder::ACQ}, tokens::MemoryAt{tokens::Register{0}}, tokens::Register{9});
     CheckTokens(lines[2], tokens::Finish{});
     CheckTokens(lines[3], tokens::Fail{});
 }

@@ -19,4 +19,3 @@ RUN mkdir build && cd build && \
     make && ctest --output-on-failure
 
 COPY examples/ /build/
-COPY tests/tso/programs /build/tests/tso/programs

@@ -6,6 +6,7 @@ add_executable(test)
 
 add_subdirectory(tokenizer)
 add_subdirectory(parser)
+add_subdirectory(modelchecker)
 
 target_link_libraries(test PRIVATE Catch2::Catch2WithMain)
 target_link_libraries(test PRIVATE engine)

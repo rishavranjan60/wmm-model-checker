@@ -44,9 +44,7 @@ std::ostream& operator<<(std::ostream& out, BinaryOperator op) {
     return out;
 }
 
-std::ostream& operator<<(std::ostream& out, Register reg) {
-    return out << 'r' << static_cast<int>(reg);
-}
+std::ostream& operator<<(std::ostream& out, Register reg) { return out << 'r' << static_cast<int>(reg); }
 
 MemoryOrder ExtractLoadOrder(MemoryOrder order) {
     switch (order) {
@@ -58,6 +56,8 @@ MemoryOrder ExtractLoadOrder(MemoryOrder order) {
         case MemoryOrder::SEQ_CST:
         case MemoryOrder::REL:
             throw RuntimeError{"Bad memory order for reading"};
+        default:
+            throw RuntimeError{"Unsupported memory order"};
     }
 }
 
@@ -71,5 +71,7 @@ MemoryOrder ExtractStoreOrder(MemoryOrder order) {
         case MemoryOrder::SEQ_CST:
         case MemoryOrder::ACQ:
             throw RuntimeError{"Bad memory order for reading"};
+        default:
+            throw RuntimeError{"Unsupported memory order"};
     }
 }

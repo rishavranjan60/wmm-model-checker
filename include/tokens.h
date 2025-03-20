@@ -18,12 +18,12 @@
         static constexpr char kTokenName[] = #Name; \
     };
 
-#define DEFINE_TOKEN_WITH_ARG(Name, ArgT, arg_name)           \
-    struct Name {                                             \
-        ArgT arg_name;                                        \
+#define DEFINE_TOKEN_WITH_ARG(Name, ArgT, arg_name)            \
+    struct Name {                                              \
+        ArgT arg_name;                                         \
         Name(ArgT arg_name) : arg_name(std::move(arg_name)) {} \
-        DEFINE_EQUALS(Name);                                  \
-        static constexpr char kTokenName[] = #Name;           \
+        DEFINE_EQUALS(Name);                                   \
+        static constexpr char kTokenName[] = #Name;            \
     };
 
 namespace tokens {

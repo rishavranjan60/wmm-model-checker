@@ -75,9 +75,7 @@ public:
         return result;
     }
 
-    View UpdateGlobalView(const View& view) {
-        return global_view = JoinViews(view, global_view);
-    }
+    View UpdateGlobalView(const View& view) { return global_view = JoinViews(view, global_view); }
 
     size_t Size() const override { return size; }
 
@@ -94,7 +92,8 @@ public:
         for (Word addr{}; const auto& list : data) {
             out << '#' << std::setw(3) << std::right << addr++ << ": ";
             for (auto it = list.crbegin(); it != list.crend(); ++it) {
-                out << "{" << std::setw(kDecimalDigitsInWord + 1) << it->value << " @ " << &*it << "}" << (it->is_hooked ? '*' : ' ');
+                out << "{" << std::setw(kDecimalDigitsInWord + 1) << it->value << " @ " << &*it << "}"
+                    << (it->is_hooked ? '*' : ' ');
                 if (print_views) {
                     out << "\nView:\n";
                     PrintView(it->view, out);

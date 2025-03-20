@@ -12,7 +12,7 @@ private:
 public:
     RandomChooser(size_t seed = 239) : random_generator{seed} {}
 
-    int ChooseThread(const std::vector<Thread>& threads, const std::shared_ptr<const Memory> &) override {
+    int ChooseThread(const std::vector<Thread>& threads, const std::shared_ptr<const Memory>&) override {
         if (threads.empty()) {
             throw std::logic_error{"No threads in program"};
         }

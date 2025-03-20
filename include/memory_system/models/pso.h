@@ -67,9 +67,7 @@ public:
         Propagate(addresses[res]);
     }
 
-    bool HasSilent() const override {
-        return !buffers.empty();
-    }
+    bool HasSilent() const override { return !buffers.empty(); }
 
     void Print(std::ostream& out) const override {
         for (const auto& [address, buffer] : buffers) {

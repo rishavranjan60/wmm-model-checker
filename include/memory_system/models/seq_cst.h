@@ -15,15 +15,9 @@ public:
 
     void Fence(MemoryOrder) override {}
 
-    void DoSilent() override {
-        throw std::logic_error{"Silent step in DirectView"};
-    }
+    void DoSilent() override { throw std::logic_error{"Silent step in DirectView"}; }
 
-    bool HasSilent() const override {
-        return false;
-    }
+    bool HasSilent() const override { return false; }
 
-    void Print(std::ostream& out) const override {
-        out << "Same as memory\n";
-    }
+    void Print(std::ostream& out) const override { out << "Same as memory\n"; }
 };

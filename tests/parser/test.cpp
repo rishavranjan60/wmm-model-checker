@@ -5,8 +5,6 @@
 #include "parser.h"
 #include "errors.h"
 
-using namespace commands;
-
 namespace {
 
 template <class T>
@@ -29,20 +27,20 @@ TEST_CASE("Assigment number") {
         "r3 = 42\n\t"
         "r0 = 1234567890",
         2);
-    auto* assigment = As<Assigment>(lines[0].get());
-    auto* rhs = As<Number>(assigment->rhs.get());
+    auto* assigment = As<commands::Assigment>(lines[0].get());
+    auto* rhs = As<commands::Number>(assigment->rhs.get());
     REQUIRE(assigment->lhs == Register{3});
     REQUIRE(rhs->value == 42);
-    assigment = As<Assigment>(lines[1].get());
-    rhs = As<Number>(assigment->rhs.get());
+    assigment = As<commands::Assigment>(lines[1].get());
+    rhs = As<commands::Number>(assigment->rhs.get());
     REQUIRE(assigment->lhs == Register{0});
     REQUIRE(rhs->value == 1234567890);
 
     REQUIRE_THROWS_WITH(GetCode("r1 = cas"), "Line 1: Expected number or operator after \"=\"");
 
     lines = GetCode("bruh: r0 = -5");
-    assigment = As<Assigment>(lines[0].get());
-    rhs = As<Number>(assigment->rhs.get());
+    assigment = As<commands::Assigment>(lines[0].get());
+    rhs = As<commands::Number>(assigment->rhs.get());
     REQUIRE(assigment->lhs == Register{0});
     REQUIRE(rhs->value == -5);
 }
@@ -62,7 +60,7 @@ TEST_CASE("Assigment operator") {
                       make_data(2, ::BinaryOperator::MULTIPLY, 2, 14), make_data(14, ::BinaryOperator::DIVIDE, 6, 9),
                       make_data(15, ::BinaryOperator::XOR, 0, 1)};
     for (size_t i{}; const auto& [lhs, op, l, r] : test_data) {
-        auto* assigment = As<Assigment>(lines[i++].get());
+        auto* assigment = As<commands::Assigment>(lines[i++].get());
         auto* rhs = As<commands::BinaryOperator>(assigment->rhs.get());
         REQUIRE(assigment->lhs == lhs);
         REQUIRE(rhs->op == op);

@@ -6,19 +6,19 @@ std::ostream& operator<<(std::ostream& out, MemoryOrder order) {
     switch (order) {
         case MemoryOrder::RLX:
             out << "RLX";
-            break;
+        break;
         case MemoryOrder::REL:
             out << "REL";
-            break;
+        break;
         case MemoryOrder::ACQ:
             out << "ACQ";
-            break;
+        break;
         case MemoryOrder::REL_ACQ:
             out << "REL_ACQ";
-            break;
+        break;
         case MemoryOrder::SEQ_CST:
             out << "SEQ_CST";
-            break;
+        break;
     }
     return out;
 }
@@ -27,19 +27,19 @@ std::ostream& operator<<(std::ostream& out, BinaryOperator op) {
     switch (op) {
         case BinaryOperator::PLUS:
             out << '+';
-            break;
+        break;
         case BinaryOperator::MINUS:
             out << '-';
-            break;
+        break;
         case BinaryOperator::MULTIPLY:
             out << '*';
-            break;
+        break;
         case BinaryOperator::DIVIDE:
             out << '/';
-            break;
+        break;
         case BinaryOperator::XOR:
             out << '^';
-            break;
+        break;
     }
     return out;
 }

@@ -32,10 +32,9 @@ protected:
     }
 
 public:
-    InteractiveChooser(std::istream& in = std::cin, std::ostream& out = std::cout,
-                       std::string begin_str = "->\n", std::string end_str = "<-\n")
-        : in{in}, out{out}, begin_str{std::move(begin_str)}, end_str{std::move(end_str)} {
-    }
+    InteractiveChooser(std::istream& in = std::cin, std::ostream& out = std::cout, std::string begin_str = "->\n",
+                       std::string end_str = "<-\n")
+        : in{in}, out{out}, begin_str{std::move(begin_str)}, end_str{std::move(end_str)} {}
 
     void PrintHelp(std::ostream& help_out) override {
         help_out << "Write -N to view Nth thread state.\n";

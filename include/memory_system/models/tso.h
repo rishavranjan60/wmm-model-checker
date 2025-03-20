@@ -7,7 +7,7 @@
 
 class WriteBufferView : public WithMemoryAndChooserView<ArrayMemory> {
 private:
-    std::deque<std::pair<Word, Word>> buffer{}; // first - address; second - value;
+    std::deque<std::pair<Word, Word>> buffer{};  // first - address; second - value;
 
     void Propagate() {
         auto [address, value] = buffer.back();
@@ -56,9 +56,7 @@ public:
         }
     }
 
-    bool HasSilent() const override {
-        return !buffer.empty();
-    }
+    bool HasSilent() const override { return !buffer.empty(); }
 
     void Print(std::ostream& out) const override {
         for (const auto& [address, value] : buffer) {

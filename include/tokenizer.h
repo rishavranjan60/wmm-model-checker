@@ -18,15 +18,9 @@ public:
 
     void Next();
 
-    Tokenizer(std::istream& in) : in(in) {
-        Next();
-    }
+    Tokenizer(std::istream& in) : in(in) { Next(); }
 
-    tokens::Line GetLine() const {
-        return line;
-    }
+    tokens::Line GetLine() const { return line; }
 
-    bool IsEnd() const {
-        return is_end;
-    }
+    bool IsEnd() const { return is_end; }
 };

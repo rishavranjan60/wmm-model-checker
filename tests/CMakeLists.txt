@@ -6,6 +6,7 @@ add_executable(test)
 
 add_subdirectory(tokenizer)
 add_subdirectory(parser)
+add_subdirectory(modelchecker)
 add_subdirectory(release_acquire)
 add_subdirectory(tso)
 add_subdirectory(sc)

@@ -16,6 +16,8 @@ target_compile_options(engine PRIVATE -Wall -Wextra -Wpedantic)
 add_executable(executor main.cpp)
 target_link_libraries(executor PRIVATE engine)
 
+option(ENABLE_TESTS "Enable tests build" ON)
+
 if (ENABLE_TESTS)
     add_subdirectory(tests)
 endif ()

@@ -8,8 +8,6 @@ RUN apt-get update && apt-get -y --no-install-recommends install \
     git \
     ca-certificates
 
-RUN git config --global http.sslVerify false
-
 COPY include/ srcs/include/
 COPY src/ srcs/src/
 COPY main.cpp srcs/

@@ -87,7 +87,7 @@ int main(int argc, char** argv) {
             std::cout << "Program is correct\n";
         } catch (FailError&) {
             auto trace = checker->GetTrace();
-            std::cout << "\"fail\" found, stacktrace:\n";
+            std::cout << "\"fail\" found, choices were:\n";
             for (auto i : trace) {
                 std::cout << i << '\n';
             }

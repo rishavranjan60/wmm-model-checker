@@ -16,8 +16,12 @@ cd /build
 
 for PSO TESTING
 cd /build
+cmake /srcs
  make -j$(nproc)  #compile the project 
  g++ -O2 -march=native -o /build/tests/pso/test_pso /build/tests/pso/test_pso.cpp -lpthread  #build the test
+ g++ O0 -g -fno-inline -fno-omit-frame-pointer -o /build/tests/pso/test_pso /build/tests/pso/test_pso.cpp -lpthread
  ./tests/pso/test_pso  #run the test
+ assert(success_count > 0 && "Expected reordering under PSO"); presents in the code that causing the error
+
 
 ```

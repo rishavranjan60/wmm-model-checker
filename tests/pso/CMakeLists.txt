@@ -1,10 +1,23 @@
-cmake_minimum_required(VERSION 3.10)
-project(pso_tests)
+# Corrected tests/pso/CMakeLists.txt
+set(CMAKE_MODULE_PATH  "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
+find_package(Catch REQUIRED)
 
-add_executable(test_pso test_pso.cpp)
-target_link_libraries(test_pso engine executor pthread)  # Replace 'engine' with actual library name if needed
+# Add test executable (as a library or separate executable)
+add_executable(test)
 
+# Add the subdirectories
+add_subdirectory(tokenizer)
+add_subdirectory(parser)
+add_subdirectory(modelchecker)
+add_subdirectory(release_acquire)
+add_subdirectory(tso)
+add_subdirectory(sc)
+add_subdirectory(pso)
 
+# Link test with Catch2 and engine
+target_link_libraries(test PRIVATE Catch2::Catch2WithMain)
+target_link_libraries(test PRIVATE engine)
+
+# Ensure test_pso is added to the final build
+add_dependencies(test test_pso)  # This line ensures test_pso is built with the rest of the tests

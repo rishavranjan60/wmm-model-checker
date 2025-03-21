@@ -1,0 +1,10 @@
+^C:\USERS\RANJA\ONEDRIVE\DESKTOP\CAPSTONE\WMM-MODEL-CHECKER\TESTS\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/ranja/OneDrive/Desktop/capstone/wmm-model-checker -BC:/Users/ranja/OneDrive/Desktop/capstone/wmm-model-checker/build --check-stamp-file C:/Users/ranja/OneDrive/Desktop/capstone/wmm-model-checker/build/tests/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

@@ -1,0 +1,10 @@
+^C:\USERS\RANJA\ONEDRIVE\DESKTOP\CAPSTONE\WMM-MODEL-CHECKER\BUILD\_DEPS\CATCH2-SUBBUILD\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/ranja/OneDrive/Desktop/capstone/wmm-model-checker/build/_deps/catch2-subbuild -BC:/Users/ranja/OneDrive/Desktop/capstone/wmm-model-checker/build/_deps/catch2-subbuild --check-stamp-file C:/Users/ranja/OneDrive/Desktop/capstone/wmm-model-checker/build/_deps/catch2-subbuild/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

@@ -1,0 +1,8 @@
+C:/Users/ranja/OneDrive/Desktop/capstone/wmm-model-checker/build/CMakeFiles/engine.dir
+C:/Users/ranja/OneDrive/Desktop/capstone/wmm-model-checker/build/CMakeFiles/executor.dir
+C:/Users/ranja/OneDrive/Desktop/capstone/wmm-model-checker/build/CMakeFiles/ALL_BUILD.dir
+C:/Users/ranja/OneDrive/Desktop/capstone/wmm-model-checker/build/CMakeFiles/ZERO_CHECK.dir
+C:/Users/ranja/OneDrive/Desktop/capstone/wmm-model-checker/build/tests/CMakeFiles/test.dir
+C:/Users/ranja/OneDrive/Desktop/capstone/wmm-model-checker/build/_deps/catch2-build/CMakeFiles/ALL_BUILD.dir
+C:/Users/ranja/OneDrive/Desktop/capstone/wmm-model-checker/build/_deps/catch2-build/src/CMakeFiles/Catch2.dir
+C:/Users/ranja/OneDrive/Desktop/capstone/wmm-model-checker/build/_deps/catch2-build/src/CMakeFiles/Catch2WithMain.dir

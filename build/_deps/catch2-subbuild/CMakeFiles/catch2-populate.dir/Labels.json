@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "C:/Users/ranja/OneDrive/Desktop/capstone/wmm-model-checker/build/_deps/catch2-subbuild/CMakeFiles/catch2-populate"
+		},
+		{
+			"file" : "C:/Users/ranja/OneDrive/Desktop/capstone/wmm-model-checker/build/_deps/catch2-subbuild/CMakeFiles/d12a3bb242a2f031a656afe3c6ef3cc4/catch2-populate.rule"
+		},
+		{
+			"file" : "C:/Users/ranja/OneDrive/Desktop/capstone/wmm-model-checker/build/_deps/catch2-subbuild/CMakeFiles/9a2412166e99c650dc5385f1937206f6/catch2-populate-complete.rule"
+		},
+		{
+			"file" : "C:/Users/ranja/OneDrive/Desktop/capstone/wmm-model-checker/build/_deps/catch2-subbuild/CMakeFiles/7a8379938bb2c676941d1482f162533e/catch2-populate-build.rule"
+		},
+		{
+			"file" : "C:/Users/ranja/OneDrive/Desktop/capstone/wmm-model-checker/build/_deps/catch2-subbuild/CMakeFiles/7a8379938bb2c676941d1482f162533e/catch2-populate-configure.rule"
+		},
+		{
+			"file" : "C:/Users/ranja/OneDrive/Desktop/capstone/wmm-model-checker/build/_deps/catch2-subbuild/CMakeFiles/7a8379938bb2c676941d1482f162533e/catch2-populate-download.rule"
+		},
+		{
+			"file" : "C:/Users/ranja/OneDrive/Desktop/capstone/wmm-model-checker/build/_deps/catch2-subbuild/CMakeFiles/7a8379938bb2c676941d1482f162533e/catch2-populate-install.rule"
+		},
+		{
+			"file" : "C:/Users/ranja/OneDrive/Desktop/capstone/wmm-model-checker/build/_deps/catch2-subbuild/CMakeFiles/7a8379938bb2c676941d1482f162533e/catch2-populate-mkdir.rule"
+		},
+		{
+			"file" : "C:/Users/ranja/OneDrive/Desktop/capstone/wmm-model-checker/build/_deps/catch2-subbuild/CMakeFiles/7a8379938bb2c676941d1482f162533e/catch2-populate-patch.rule"
+		},
+		{
+			"file" : "C:/Users/ranja/OneDrive/Desktop/capstone/wmm-model-checker/build/_deps/catch2-subbuild/CMakeFiles/7a8379938bb2c676941d1482f162533e/catch2-populate-test.rule"
+		},
+		{
+			"file" : "C:/Users/ranja/OneDrive/Desktop/capstone/wmm-model-checker/build/_deps/catch2-subbuild/CMakeFiles/7a8379938bb2c676941d1482f162533e/catch2-populate-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"catch2-populate"
+		],
+		"name" : "catch2-populate"
+	}
+}

@@ -1,0 +1,16 @@
+{
+	"InstallScripts" : 
+	[
+		"C:/Users/ranja/OneDrive/Desktop/capstone/wmm-model-checker/build/cmake_install.cmake",
+		"C:/Users/ranja/OneDrive/Desktop/capstone/wmm-model-checker/build/tests/cmake_install.cmake",
+		"C:/Users/ranja/OneDrive/Desktop/capstone/wmm-model-checker/build/_deps/catch2-build/cmake_install.cmake",
+		"C:/Users/ranja/OneDrive/Desktop/capstone/wmm-model-checker/build/_deps/catch2-build/src/cmake_install.cmake",
+		"C:/Users/ranja/OneDrive/Desktop/capstone/wmm-model-checker/build/tests/tokenizer/cmake_install.cmake",
+		"C:/Users/ranja/OneDrive/Desktop/capstone/wmm-model-checker/build/tests/parser/cmake_install.cmake",
+		"C:/Users/ranja/OneDrive/Desktop/capstone/wmm-model-checker/build/tests/modelchecker/cmake_install.cmake",
+		"C:/Users/ranja/OneDrive/Desktop/capstone/wmm-model-checker/build/tests/release_acquire/cmake_install.cmake",
+		"C:/Users/ranja/OneDrive/Desktop/capstone/wmm-model-checker/build/tests/tso/cmake_install.cmake",
+		"C:/Users/ranja/OneDrive/Desktop/capstone/wmm-model-checker/build/tests/sc/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

@@ -9,7 +9,7 @@
 #include <fstream>
 #include <string>
 
-const std::string simple_sequence = R"(
+const std::string kSimpleSequence = R"(
 r0 = + r1 r15
 r1 = 1
 r2 = 2
@@ -39,7 +39,7 @@ x = 0
 t1: x = 1; r3 = x
 t2: x = 2; r4 = x; assert not (r3 == 2 and r4 == 1))";
 
-const std::string mutual_dependence = R"(
+const std::string kMutualDependence = R"(
 r0 = + r0 r15
 r1 = + r1 r15
 r2 = 1
@@ -84,7 +84,7 @@ T4: write z = 0; read x -> r10; assert r10 * r11 * r12 != 1
 In the last thread to execute, the read value will be 0,
 so the product of the variables will end up being 0.)";
 
-const std::string check_variable = R"(
+const std::string kCheckVariable = R"(
 r0 = + r1 r15
 r1 = 1
 r2 = 2
@@ -114,7 +114,7 @@ x = 0
 t1: x = 1; r3 = x
 t2: x = 2; r4 = x; assert not (r3 == 2 and r4 == 1))";
 
-void run_seq_program(std::string code_text, size_t thread_count) {
+void RunSeqProgram(std::string code_text, size_t thread_count) {
     MemoryModel model = MemoryModel::SEQ_CST;
     std::stringstream ss(code_text);
     Tokenizer tokenizer{ss};
@@ -134,16 +134,16 @@ void run_seq_program(std::string code_text, size_t thread_count) {
 }
 
 TEST_CASE("Check the order of the two sequences") {
-    std::string code_text = simple_sequence;
-    run_seq_program(code_text, 2);
+    std::string code_text = kSimpleSequence;
+    RunSeqProgram(code_text, 2);
 }
 
 TEST_CASE("Check the order of the three mutual sequences") {
-    std::string code_text = mutual_dependence;
-    run_seq_program(code_text, 3);
+    std::string code_text = kMutualDependence;
+    RunSeqProgram(code_text, 3);
 }
 
 TEST_CASE("Check the order of writing and then reading") {
-    std::string code_text = check_variable;
-    run_seq_program(code_text, 2);
+    std::string code_text = kCheckVariable;
+    RunSeqProgram(code_text, 2);
 }

@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "tokenizer.h"
 
 #include <algorithm>

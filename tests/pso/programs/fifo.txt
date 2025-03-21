@@ -1,0 +1,31 @@
+r0 = + r0 r15
+r1 = 1
+if r0 goto t2+
+if r1 goto t1
+t2+: r0 = - r0 r1
+     if r0 goto bad
+     if r1 goto t2
+t1: r0 = 0
+    r1 = 1
+    r2 = 1
+    store RLX #r0 r2
+    store RLX #r1 r2
+    finish
+t2: load RLX #r1 r11
+    load RLX #r0 r10
+    if r11 goto check
+    finish
+check: if r10 goto end
+       fail
+bad: fail
+end: finish
+
+-----
+In TSO, stores are done in a single global order, if one thread writes x = 1 and y = 1,
+another thread cannot see y = 1 but x = 0
+
+1) TSO guarantees that if y = 1 is visible to another thread, then x = 1 is also visible to it
+
+2) If r11 == 1 (thread t2 saw y = 1), it is bound to see x = 1 as well
+
+3) If r10 == 0, then the global order of records has been violated, fail is called

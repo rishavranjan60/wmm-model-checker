@@ -11,7 +11,7 @@
 
 namespace tso_test {
 
-const std::string load_store = R"(
+const std::string kLoadStore = R"(
 r0 = + r0 r15
 r1 = 1
 if r0 goto t2+
@@ -46,7 +46,7 @@ but it is forbidden to observe y = 1 without seeing x = 1
 2) If r10 == 0 (the thread has seen x = 0), then r11 must be 0. If it is 1,
 it means an invalid situation has occurred, fail is called)";
 
-const std::string fifo = R"(
+const std::string kFifo = R"(
 r0 = + r0 r15
 r1 = 1
 if r0 goto t2+
@@ -81,7 +81,7 @@ it will surely see x = 1 when it loads it
 although x = 1 has already become visible, which is forbidden in TSO. In this case the test
 goes to fail)";
 
-const std::string rel_acq = R"(
+const std::string kRelAcq = R"(
 r0 = + r0 r15
 r1 = 1
 if r0 goto t2+
@@ -115,7 +115,7 @@ such that if one thread sees y = 1, it is obliged to see x = 1 as well
 3) If r11 == 1 but r10 == 0, it means that t2 saw y = 1 but did not see x = 1, which is forbidden in TSO.
 In this case the test goes to fail)";
 
-const std::string global_store_ordering = R"(
+const std::string kGlobalStoreOrdering = R"(
 r0 = + r0 r15
 r1 = 1
 if r0 goto t2+
@@ -148,7 +148,7 @@ another thread cannot see y = 1 but x = 0
 
 3) If r10 == 0, then the global order of records has been violated, fail is called)";
 
-void run_program(const std::string& code_text) {
+void RunProgram(const std::string& code_text) {
     MemoryModel model = MemoryModel::TSO;
     std::stringstream ss(code_text);
     Tokenizer tokenizer{ss};
@@ -169,22 +169,22 @@ void run_program(const std::string& code_text) {
 }
 
 TEST_CASE("Allowed Load-Store reordering in TSO") {
-    std::string code_text = load_store;
-    run_program(code_text);
+    std::string code_text = kLoadStore;
+    RunProgram(code_text);
 }
 
 TEST_CASE("FIFO behavior of the Store Buffering Passes (Store Buffering Passes)") {
-    std::string code_text = fifo;
-    run_program(code_text);
+    std::string code_text = kFifo;
+    RunProgram(code_text);
 }
 
 TEST_CASE("Recording order with RELEASE and ACQUIRE") {
-    std::string code_text = rel_acq;
-    run_program(code_text);
+    std::string code_text = kRelAcq;
+    RunProgram(code_text);
 }
 
 TEST_CASE("Global Store Ordering") {
-    std::string code_text = global_store_ordering;
-    run_program(code_text);
+    std::string code_text = kGlobalStoreOrdering;
+    RunProgram(code_text);
 }
 }  // namespace tso_test

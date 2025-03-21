@@ -6,25 +6,11 @@ RUN apt-get update && apt-get -y --no-install-recommends install \
     build-essential \
     cmake \
     make \
-<<<<<<< HEAD
     git \
-    ca-certificates
-
-COPY include/ srcs/include/
-COPY src/ srcs/src/
-COPY main.cpp srcs/
-COPY CMakeLists.txt srcs/
-COPY tests/ srcs/tests/
-
-RUN mkdir build && cd build && \
-    cmake ../srcs -DENABLE_TESTS=ON && \
-    make && ctest --output-on-failure
-
-COPY examples/ /build/
-=======
     g++ \
     python3 \
-    python3-pip
+    python3-pip \
+    ca-certificates
 
 # Set the working directory
 WORKDIR /srcs
@@ -37,12 +23,8 @@ COPY CMakeLists.txt .
 
 # Create build directory and compile
 WORKDIR /build
-RUN cmake /srcs && make
+RUN cmake /srcs -DENABLE_TESTS=ON && make && ctest --output-on-failure
 
 # Copy examples and tests
 COPY examples/ /build/examples/
 COPY tests/ /build/tests/
-
-# Set the default command (optional, depending on your project)
-CMD ["./tests/pso/test_pso"]
->>>>>>> 86d3c0e (test pso)

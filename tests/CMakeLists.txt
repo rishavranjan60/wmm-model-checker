@@ -7,14 +7,11 @@ add_executable(test)
 # Add the subdirectories
 add_subdirectory(tokenizer)
 add_subdirectory(parser)
-<<<<<<< HEAD
 add_subdirectory(modelchecker)
 add_subdirectory(release_acquire)
 add_subdirectory(pso)
 add_subdirectory(sc)
-=======
-add_subdirectory(pso)
->>>>>>> 86d3c0e (test pso)
+
 
 # Link the pso test executable to the main test target (optional if needed)
 target_link_libraries(test PRIVATE Catch2::Catch2WithMain)

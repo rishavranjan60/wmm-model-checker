@@ -10,7 +10,7 @@ add_subdirectory(parser)
 <<<<<<< HEAD
 add_subdirectory(modelchecker)
 add_subdirectory(release_acquire)
-add_subdirectory(tso)
+add_subdirectory(pso)
 add_subdirectory(sc)
 =======
 add_subdirectory(pso)

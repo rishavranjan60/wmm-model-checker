@@ -1,6 +1,6 @@
 #pragma once
 
-#include "tokenizer.h"
 #include "code.h"
+#include "tokenizer.h"
 
-Code Parse(Tokenizer&);
+Code Parse(Tokenizer &);

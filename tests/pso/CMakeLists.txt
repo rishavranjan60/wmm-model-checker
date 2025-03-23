@@ -7,4 +7,4 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 add_executable(test_pso test_pso.cpp)
 target_link_libraries(test_pso engine)  # Replace 'engine' with actual library name if needed
 
-
+target_sources(test PRIVATE pso_test.cpp)

@@ -1,10 +1,10 @@
-#include <catch2/catch_test_macros.hpp>
 #include "defs.h"
+#include <catch2/catch_test_macros.hpp>
 
 #include <parser.h>
+#include <path_choosers/full.h>
 #include <program.h>
 #include <tokenizer.h>
-#include <path_choosers/full.h>
 
 const std::string kDekkerLockProgram = R"(
 r0 = + r1 r15
@@ -66,7 +66,8 @@ r11 = y (ACQ) | x = 1 (RLX)
 r10 = x (RLX) | y = 1 (REL)
 assert not r10 == 0 && r11 == 1 | skip)";
 
-TEST_CASE("Dekker lock fails under RA") {
+TEST_CASE("Dekker lock fails under RA")
+{
     constexpr auto kModel = MemoryModel::RA;
     constexpr std::size_t kThreadsCount = 2;
     std::stringstream ss(kDekkerLockProgram);
@@ -74,8 +75,10 @@ TEST_CASE("Dekker lock fails under RA") {
     auto code = Parse(tokenizer);
     auto checker = std::make_shared<FullChooser>();
     Program program(std::move(code), kThreadsCount, checker);
-    try {
-        while (!checker->Finished()) {
+    try
+    {
+        while (!checker->Finished())
+        {
             constexpr std::size_t kMemorySize = 8;
             program.Init(kModel, kMemorySize);
             program.SetVerbosity(false);
@@ -83,11 +86,14 @@ TEST_CASE("Dekker lock fails under RA") {
             checker->NextRun();
         }
         REQUIRE(false);
-    } catch (FailError&) {
+    }
+    catch (FailError &)
+    {
     }
 }
 
-TEST_CASE("Message passing works") {
+TEST_CASE("Message passing works")
+{
     constexpr auto kModel = MemoryModel::RA;
     constexpr std::size_t kThreadsCount = 2;
     std::stringstream ss(kMessagePassingProgram);
@@ -95,15 +101,19 @@ TEST_CASE("Message passing works") {
     auto code = Parse(tokenizer);
     auto checker = std::make_shared<FullChooser>();
     Program program(std::move(code), kThreadsCount, checker);
-    try {
-        while (!checker->Finished()) {
+    try
+    {
+        while (!checker->Finished())
+        {
             constexpr std::size_t kMemorySize = 8;
             program.Init(kModel, kMemorySize);
             program.SetVerbosity(false);
             program.Run();
             checker->NextRun();
         }
-    } catch (FailError&) {
+    }
+    catch (FailError &)
+    {
         // fail in case there was 'fail' instruction reached
         REQUIRE(false);
     }

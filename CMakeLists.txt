@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.14)
 project(wmm-model-checker)
 
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+
 # Enable testing by default
 option(ENABLE_TESTS "Enable tests build" ON)
 

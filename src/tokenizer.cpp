@@ -1,10 +1,14 @@
+#include <algorithm>
+
 #include "tokenizer.h"
 
 #include <algorithm>
 #include <unordered_map>
 
-namespace {
-tokens::Token TokenFromString(const std::string& str) {
+namespace
+{
+tokens::Token TokenFromString(const std::string &str)
+{
     static const std::unordered_map<std::string, tokens::Token> kMap = {
         {"+", tokens::BinaryOperator{BinaryOperator::PLUS}},
         {"-", tokens::BinaryOperator{BinaryOperator::MINUS}},
@@ -27,23 +31,30 @@ tokens::Token TokenFromString(const std::string& str) {
         {"finish", tokens::Finish{}},
         {"fail", tokens::Fail{}},
         {"fai", tokens::Fai{}}};
-    if (kMap.contains(str)) {
+    if (kMap.contains(str))
+    {
         return kMap.at(str);
     }
-    if (str.front() == '#') {
-        return tokens::MemoryAt{std::get<tokens::Register>(TokenFromString({str.begin() + 1, str.end()}))};
+    if (str.front() == '#')
+    {
+        return tokens::MemoryAt{
+            std::get<tokens::Register>(TokenFromString({str.begin() + 1, str.end()}))};
     }
-    if (str.front() == 'r') {
+    if (str.front() == 'r')
+    {
         int num = std::atoi(str.c_str() + 1);
-        if (num < 0 || num >= 16) {
+        if (num < 0 || num >= 16)
+        {
             throw SyntaxError{"Wrong register name"};
         }
         return tokens::Register{static_cast<Register>(num)};
     }
-    if (std::isdigit(str.front()) || str.front() == '-') {
+    if (std::isdigit(str.front()) || str.front() == '-')
+    {
         size_t pos;
         int value = std::stoi(str, &pos);
-        if (pos != str.size()) {
+        if (pos != str.size())
+        {
             throw SyntaxError{"Bad number"};
         }
         return tokens::Constant{value};
@@ -51,39 +62,51 @@ tokens::Token TokenFromString(const std::string& str) {
     throw SyntaxError{"Unknown token"};
 }
 
-}  // namespace
+} // namespace
 
-void Tokenizer::Next() {
+void Tokenizer::Next()
+{
     line.clear();
     std::string str;
-    while (getline(in, str)) {
-        if (std::all_of(str.begin(), str.end(), [](char c) { return std::isspace(c); })) {
+    while (getline(in, str))
+    {
+        if (std::all_of(str.begin(), str.end(), [](char c) { return std::isspace(c); }))
+        {
             continue;
         }
-        if (str == "-----") {
+        if (str == "-----")
+        {
             break;
         }
         std::stringstream ss{str};
         ss >> str;
-        if (str.back() == ':') {
+        if (str.back() == ':')
+        {
             str.pop_back();
             line.push_back(tokens::Label{std::move(str)});
-        } else {
+        }
+        else
+        {
             ss.seekg(0);
         }
-        for (int i = 0; i < kMaxTokensPerLine; ++i) {
-            if (!(ss >> str)) {
+        for (int i = 0; i < kMaxTokensPerLine; ++i)
+        {
+            if (!(ss >> str))
+            {
                 return;
             }
             auto token = TokenFromString(str);
-            if (auto* gt = std::get_if<tokens::Goto>(&token)) {
-                if (!(ss >> gt->label.name)) {
+            if (auto *gt = std::get_if<tokens::Goto>(&token))
+            {
+                if (!(ss >> gt->label.name))
+                {
                     throw SyntaxError{"No label after \"goto\""};
                 }
             }
             line.push_back(std::move(token));
         }
-        throw SyntaxError{"Line can't contain more then " + std::to_string(kMaxTokensPerLine) + " tokens"};
+        throw SyntaxError{"Line can't contain more then " + std::to_string(kMaxTokensPerLine) +
+                          " tokens"};
     }
     is_end = true;
 }

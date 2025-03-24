@@ -1,8 +1,8 @@
 #include "defs.h"
-#include "tokenizer.h"
 #include "parser.h"
-#include "program.h"
 #include "path_choosers/full.h"
+#include "program.h"
+#include "tokenizer.h"
 
 #include <catch2/catch_test_macros.hpp>
 
@@ -114,7 +114,8 @@ x = 0
 t1: x = 1; r3 = x
 t2: x = 2; r4 = x; assert not (r3 == 2 and r4 == 1))";
 
-void RunSeqProgram(std::string code_text, size_t thread_count) {
+void RunSeqProgram(std::string code_text, size_t thread_count)
+{
     MemoryModel model = MemoryModel::SEQ_CST;
     std::stringstream ss(code_text);
     Tokenizer tokenizer{ss};
@@ -125,7 +126,8 @@ void RunSeqProgram(std::string code_text, size_t thread_count) {
     size_t memory_size = 8;
     Program program(std::move(code), thread_count, checker);
 
-    while (!checker->Finished()) {
+    while (!checker->Finished())
+    {
         program.Init(model, memory_size);
         program.SetVerbosity(is_verbose);
         program.Run();
@@ -133,17 +135,20 @@ void RunSeqProgram(std::string code_text, size_t thread_count) {
     }
 }
 
-TEST_CASE("Check the order of the two sequences") {
+TEST_CASE("Check the order of the two sequences")
+{
     std::string code_text = kSimpleSequence;
     RunSeqProgram(code_text, 2);
 }
 
-TEST_CASE("Check the order of the three mutual sequences") {
+TEST_CASE("Check the order of the three mutual sequences")
+{
     std::string code_text = kMutualDependence;
     RunSeqProgram(code_text, 3);
 }
 
-TEST_CASE("Check the order of writing and then reading") {
+TEST_CASE("Check the order of writing and then reading")
+{
     std::string code_text = kCheckVariable;
     RunSeqProgram(code_text, 2);
 }

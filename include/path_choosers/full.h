@@ -4,9 +4,11 @@
 
 #include <vector>
 
-class FullChooser : public PathChooser {
-private:
-    struct State {
+class FullChooser : public PathChooser
+{
+  private:
+    struct State
+    {
         int min;
         int max;
         int cur = min;
@@ -17,55 +19,73 @@ private:
 
     bool is_end = false;
 
-    int Go(int min, int max) {
-        if (cur == path.size()) {
+    int Go(int min, int max)
+    {
+        if (cur == path.size())
+        {
             path.push_back({min, max});
         }
-        if (min != path[cur].min || max != path[cur].max) {
+        if (min != path[cur].min || max != path[cur].max)
+        {
             throw std::logic_error{"Go params don't match"};
         }
         return path[cur++].cur;
     }
 
-    void Next() {
-        if (cur-- != path.size()) {
+    void Next()
+    {
+        if (cur-- != path.size())
+        {
             throw std::logic_error{"NextRun not at leaf"};
         }
-        while (path[cur].cur++ == path[cur].max) {
+        while (path[cur].cur++ == path[cur].max)
+        {
             path.pop_back();
-            if (cur-- == 0) {
+            if (cur-- == 0)
+            {
                 is_end = true;
                 break;
             }
         }
     }
 
-public:
-    int ChooseThread(const std::vector<Thread>& threads, const std::shared_ptr<const Memory>& memory) override {
-        if (threads.empty()) {
+  public:
+    int ChooseThread(const std::vector<Thread> &threads,
+                     const std::shared_ptr<const Memory> &memory) override
+    {
+        if (threads.empty())
+        {
             throw std::logic_error{"No threads in program"};
         }
         return Go(1, threads.size()) - 1;
     }
 
-    int ChooseVariant(const std::vector<std::string>& variants, const std::string&) override {
-        if (variants.empty()) {
+    int ChooseVariant(const std::vector<std::string> &variants, const std::string &) override
+    {
+        if (variants.empty())
+        {
             throw std::logic_error{"ChooseVariant with empty variants [InteractiveChooser]"};
         }
         return Go(0, variants.size() - 1);
     }
 
-    bool Finished() const { return is_end; }
+    bool Finished() const
+    {
+        return is_end;
+    }
 
-    void NextRun() {
+    void NextRun()
+    {
         Next();
         cur = 0;
     }
 
-    std::vector<int> GetTrace() const {
+    std::vector<int> GetTrace() const
+    {
         std::vector<int> res;
         res.reserve(path.size());
-        for (const auto& [min, max, c] : path) {
+        for (const auto &[min, max, c] : path)
+        {
             res.push_back(c);
         }
         return res;

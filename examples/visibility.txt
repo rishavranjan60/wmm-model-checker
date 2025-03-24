@@ -1,0 +1,9 @@
+// Ensures visibility of writes under PSO
+// Thread 1
+STORE x, 1
+
+// Thread 2
+STORE y, 1
+LOAD x -> r1
+
+assert(!(r1 == 0 && y == 1)); // If y is seen, x should also be visible

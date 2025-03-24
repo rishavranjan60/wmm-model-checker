@@ -1,11 +1,11 @@
 #pragma once
 
-#include "thread.h"
 #include "defs.h"
 #include "memory_system/memory_view.h"
+#include "thread.h"
 
-#include <vector>
 #include <memory>
+#include <vector>
 
 #ifdef TESTING
 #define CLASS struct
@@ -13,8 +13,9 @@
 #define CLASS class
 #endif
 
-class Command {
-public:
+class Command
+{
+  public:
     virtual void Evaluate(ThreadState &state, MemoryView *mem_view) = 0;
     virtual void Print(std::ostream &) = 0;
 
@@ -23,136 +24,199 @@ public:
 
 using Code = std::vector<std::unique_ptr<Command>>;
 
-class ThreadSilentCommand : public Command {};
-
-namespace commands {
-
-CLASS Number : public ThreadSilentCommand {
-    Word value;
-
-public:
-    Number(Word value) : value(value) {}
-    void Evaluate(ThreadState & state, MemoryView *) override { state.AuxReg() = value; }
-    void Print(std::ostream & out) override { out << value; }
+class ThreadSilentCommand : public Command
+{
 };
 
-CLASS Assigment : public ThreadSilentCommand {
+namespace commands
+{
+
+CLASS Number : public ThreadSilentCommand
+{
+    Word value;
+
+  public:
+    Number(Word value) : value(value) {}
+    void Evaluate(ThreadState & state, MemoryView *) override
+    {
+        state.AuxReg() = value;
+    }
+    void Print(std::ostream & out) override
+    {
+        out << value;
+    }
+};
+
+CLASS Assigment : public ThreadSilentCommand
+{
     Register lhs;
     std::unique_ptr<Command> rhs;
 
-public:
+  public:
     Assigment(Register lhs, std::unique_ptr<Command> rhs) : lhs(lhs), rhs(std::move(rhs)) {}
-    void Evaluate(ThreadState & state, MemoryView * view) override {
+    void Evaluate(ThreadState & state, MemoryView * view) override
+    {
         rhs->Evaluate(state, view);
         state[lhs] = state.AuxReg();
     }
-    void Print(std::ostream & out) override {
+    void Print(std::ostream & out) override
+    {
         out << lhs << " = ";
         rhs->Print(out);
     }
 };
 
-CLASS BinaryOperator : public ThreadSilentCommand {
+CLASS BinaryOperator : public ThreadSilentCommand
+{
     Register lhs;
     Register rhs;
     ::BinaryOperator op;
 
-public:
+  public:
     BinaryOperator(Register lhs, Register rhs, ::BinaryOperator op) : lhs(lhs), rhs(rhs), op(op) {}
     void Evaluate(ThreadState &, MemoryView *) override;
-    void Print(std::ostream & out) override { out << op << ' ' << lhs << ' ' << rhs; }
+    void Print(std::ostream & out) override
+    {
+        out << op << ' ' << lhs << ' ' << rhs;
+    }
 };
 
-CLASS Fai : public Command {
+CLASS Fai : public Command
+{
     Register res;
     MemoryOrder order;
     Register at;
     Register add;
 
-public:
-    Fai(Register res, MemoryOrder order, Register at, Register add) : res(res), order(order), at(at), add(add) {}
+  public:
+    Fai(Register res, MemoryOrder order, Register at, Register add)
+        : res(res), order(order), at(at), add(add)
+    {
+    }
     void Evaluate(ThreadState &, MemoryView *) override;
-    void Print(std::ostream & out) override { out << res << " := fai " << order << " #" << at << ' ' << add; }
+    void Print(std::ostream & out) override
+    {
+        out << res << " := fai " << order << " #" << at << ' ' << add;
+    }
 };
 
-CLASS Cas : public Command {
+CLASS Cas : public Command
+{
     Register res;
     MemoryOrder order;
     Register at;
     Register expected;
     Register desired;
 
-public:
+  public:
     Cas(Register res, MemoryOrder mode, Register at, Register expected, Register desired)
-        : res(res), order(mode), at(at), expected(expected), desired(desired) {}
+        : res(res), order(mode), at(at), expected(expected), desired(desired)
+    {
+    }
     void Evaluate(ThreadState &, MemoryView *) override;
-    void Print(std::ostream & out) override {
+    void Print(std::ostream & out) override
+    {
         out << res << " := cas " << order << " #" << at << ' ' << expected << ' ' << desired;
     }
 };
 
-CLASS If : public ThreadSilentCommand {
+CLASS If : public ThreadSilentCommand
+{
     Register condition;
     size_t cmd_num;
 
-public:
+  public:
     If(Register condition) : condition(condition) {}
     void Evaluate(ThreadState &, MemoryView *) override;
-    void Print(std::ostream & out) override { out << "if " << condition << " goto $" << cmd_num; }
+    void Print(std::ostream & out) override
+    {
+        out << "if " << condition << " goto $" << cmd_num;
+    }
 
-    void SetLabel(size_t num) { cmd_num = num; }
+    void SetLabel(size_t num)
+    {
+        cmd_num = num;
+    }
 };
 
-CLASS Fence : public Command {
+CLASS Fence : public Command
+{
     MemoryOrder order;
 
-public:
+  public:
     Fence(MemoryOrder order) : order(order) {}
     void Evaluate(ThreadState &, MemoryView *) override;
-    void Print(std::ostream & out) override { out << "fence " << order; }
+    void Print(std::ostream & out) override
+    {
+        out << "fence " << order;
+    }
 };
 
-CLASS Load : public Command {
+CLASS Load : public Command
+{
     MemoryOrder order;
     Register at;
     Register reg;
 
-public:
+  public:
     Load(MemoryOrder order, Register at, Register reg) : order(order), at(at), reg(reg) {}
     void Evaluate(ThreadState &, MemoryView *) override;
-    void Print(std::ostream & out) override { out << "load " << order << " #" << at << ' ' << reg; }
+    void Print(std::ostream & out) override
+    {
+        out << "load " << order << " #" << at << ' ' << reg;
+    }
 };
 
-CLASS Store : public Command {
+CLASS Store : public Command
+{
     MemoryOrder order;
     Register at;
     Register reg;
 
-public:
+  public:
     Store(MemoryOrder order, Register at, Register reg) : order(order), at(at), reg(reg) {}
     void Evaluate(ThreadState &, MemoryView *) override;
-    void Print(std::ostream & out) override { out << "store " << order << " #" << at << ' ' << reg; }
+    void Print(std::ostream & out) override
+    {
+        out << "store " << order << " #" << at << ' ' << reg;
+    }
 };
 
-CLASS Finish : public Command {
-    struct Stub {};
+CLASS Finish : public Command
+{
+    struct Stub
+    {
+    };
 
-public:
-    void Evaluate(ThreadState & state, MemoryView * view) override {
+  public:
+    void Evaluate(ThreadState & state, MemoryView * view) override
+    {
         view->Fence(MemoryOrder::SEQ_CST);
         state.rip = -2;
     }
-    void Print(std::ostream & out) override { out << "finish"; }
+    void Print(std::ostream & out) override
+    {
+        out << "finish";
+    }
 };
 
-CLASS Fail : public Command {
-    struct Stub {};
+CLASS Fail : public Command
+{
+    struct Stub
+    {
+    };
 
-public:
-    void Evaluate(ThreadState & state, MemoryView *) override { throw FailError{"rip: " + std::to_string(state.rip)}; }
-    void Print(std::ostream & out) override { out << "fail"; }
+  public:
+    void Evaluate(ThreadState & state, MemoryView *) override
+    {
+        throw FailError{"rip: " + std::to_string(state.rip)};
+    }
+    void Print(std::ostream & out) override
+    {
+        out << "fail";
+    }
 };
 
-}  // namespace commands
+} // namespace commands
 
 #undef CLASS

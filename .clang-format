@@ -1,8 +1,7 @@
-BasedOnStyle: Google
+BasedOnStyle: LLVM
 IndentWidth: 4
-AccessModifierOffset: -4
-ColumnLimit: 120
-AllowShortIfStatementsOnASingleLine: false
-AllowShortLoopsOnASingleLine: false
-KeepEmptyLinesAtTheStartOfBlocks: true
-SortIncludes: false
+TabWidth: 4
+UseTab: Never
+BreakBeforeBraces: Allman
+AllowShortFunctionsOnASingleLine: Empty
+ColumnLimit: 100

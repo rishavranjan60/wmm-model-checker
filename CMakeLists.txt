@@ -33,10 +33,12 @@ add_library(engine
 )
 
 target_compile_options(engine PRIVATE -Wall -Wextra -Wpedantic)
+target_compile_features(engine PUBLIC cxx_std_20)
 
 # Build main executable
 add_executable(executor main.cpp)
 target_link_libraries(executor PRIVATE engine)
+target_compile_features(executor PUBLIC cxx_std_20)
 
 # Add tests if enabled
 if (ENABLE_TESTS)

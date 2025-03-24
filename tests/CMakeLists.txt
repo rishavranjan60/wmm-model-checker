@@ -1,6 +1,7 @@
 
 
 add_executable(test)
+target_compile_features(test PUBLIC cxx_std_20)
 
 # Add subdirectories for test modules
 add_subdirectory(tokenizer)

@@ -2,6 +2,7 @@
 
 #include "memory_system/memory.h"
 #include "memory_system/memory_view.h"
+#include "memory_system/memory.h"
 
 #include <deque>
 #include <ranges>

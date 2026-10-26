@@ -35,9 +35,16 @@ The CMake test target is named `test`. After building, run its executable direct
 
 Multi-configuration generators may place executables in an additional configuration directory such as `Debug/`.
 
-## Docker status
+## Docker
 
-The existing Dockerfile needs repair: it enables tests before copying the `tests/` directory into the source tree. Use the native build steps above until the Docker build is corrected.
+Build the image and run the test executable:
+
+```bash
+docker build -t model-checker .
+docker run --rm model-checker
+```
+
+For the command-line help, override the default test command with `docker run --rm model-checker ./executor --help`.
 
 ## Related repository
 

@@ -30,3 +30,13 @@ jobs:
 
       - name: Run the tests
         run: ./build/tests/test
+
+  docker-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build image and run tests
+        run: |
+          docker build -t model-checker-ci .
+          docker run --rm model-checker-ci

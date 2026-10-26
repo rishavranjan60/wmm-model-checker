@@ -20,14 +20,14 @@ COPY include/ include/
 COPY src/ src/
 COPY main.cpp .
 COPY CMakeLists.txt .
+COPY tests/ tests/
 
 # Create build directory and compile
 WORKDIR /build
-RUN cmake /srcs -DENABLE_TESTS=ON && make && ctest --output-on-failure
+RUN cmake /srcs -DENABLE_TESTS=ON && make && ./tests/test
 
-# Copy examples and tests
+# Copy examples
 COPY examples/ /build/examples/
-COPY tests/ /build/tests/
 
 # Default command (optional)
-CMD ["./tests/pso/test_pso"]
+CMD ["./tests/test"]
